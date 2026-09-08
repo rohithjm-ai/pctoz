@@ -1,0 +1,12 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\pctozcheck]
+@="URL:PCTOZCheck Protocol"
+"URL Protocol"=""
+
+[HKEY_CURRENT_USER\Software\Classes\pctozcheck\shell]
+
+[HKEY_CURRENT_USER\Software\Classes\pctozcheck\shell\open]
+
+[HKEY_CURRENT_USER\Software\Classes\pctozcheck\shell\open\command]
+@="\"C:\\xampp\\htdocs\\pctoz\\pctozcheck-launch.cmd\" \"%1\""

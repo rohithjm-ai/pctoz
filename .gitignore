@@ -1,0 +1,6 @@
+# Generated PC check output
+pc_check_result.json
+pc_check_report.txt
+
+# Local configuration / secrets
+config.php
