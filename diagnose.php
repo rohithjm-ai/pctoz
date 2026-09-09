@@ -300,7 +300,10 @@ function renderFindingTemplate(
                 $sessionId,
                 $matches[1]
             );
-
+            if (is_numeric($value)) {
+                $value = fmtNumber($value);
+            }
+            
             if ($value === null) {
                 return '?';
             }
@@ -495,7 +498,17 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
         | Store generated finding
         |--------------------------------------------------------------------------
         */
+        $renderedTitle = renderFindingTemplate(
+            $pdo,
+            $sessionId,
+            $message['title_template']
+        );
 
+        $renderedBody = renderFindingTemplate(
+            $pdo,
+            $sessionId,
+            $message['body_template']
+        );
         $stmtInsert = $pdo->prepare("
             INSERT INTO session_findings
             (
@@ -1786,51 +1799,51 @@ $previousSuggestions = $stmt->fetchAll();
                     }
                     ?>
 
-<?php if (count($sessionFindings) === 0): ?>
+                    <?php if (count($sessionFindings) === 0): ?>
 
-    <div class="info">
+                        <div class="info">
 
-        No immediate issue was identified by
-        the current basic checks.
+                            No immediate issue was identified by
+                            the current basic checks.
 
-        <br><br>
+                            <br><br>
 
-        This does not mean the computer has
-        no problem. We can continue with the
-        problem you came to diagnose.
+                            This does not mean the computer has
+                            no problem. We can continue with the
+                            problem you came to diagnose.
 
-    </div>
+                        </div>
 
-<?php else: ?>
-
-
-    <?php if (count($attentionFindings) > 0): ?>
-
-        <h3>Needs attention</h3>
-
-        <?php foreach ($attentionFindings as $f): ?>
-
-            <?php includeFindingBlock($f); ?>
-
-        <?php endforeach; ?>
-
-    <?php endif; ?>
+                    <?php else: ?>
 
 
-    <?php if (count($infoFindings) > 0): ?>
+                        <?php if (count($attentionFindings) > 0): ?>
 
-        <h3>Useful information</h3>
+                            <h3>Needs attention</h3>
 
-        <?php foreach ($infoFindings as $f): ?>
+                            <?php foreach ($attentionFindings as $f): ?>
 
-            <?php includeFindingBlock($f); ?>
+                                <?php includeFindingBlock($f); ?>
 
-        <?php endforeach; ?>
+                            <?php endforeach; ?>
 
-    <?php endif; ?>
+                        <?php endif; ?>
 
 
-<?php endif; ?>
+                        <?php if (count($infoFindings) > 0): ?>
+
+                            <h3>Useful information</h3>
+
+                            <?php foreach ($infoFindings as $f): ?>
+
+                                <?php includeFindingBlock($f); ?>
+
+                            <?php endforeach; ?>
+
+                        <?php endif; ?>
+
+
+                    <?php endif; ?>
 
 
                 <?php endif; ?>
