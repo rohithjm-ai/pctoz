@@ -54,8 +54,7 @@ if (
     $json = file_get_contents(
         $_FILES['pc_check_file']['tmp_name']
     );
-}
-elseif (isset($_POST['json'])) {
+} elseif (isset($_POST['json'])) {
 
     $json = $_POST['json'];
 }
@@ -187,6 +186,18 @@ try {
     | Store all scalar collector values
     |--------------------------------------------------------------------------
     */
+    $stmt = $pdo->prepare("
+    DELETE FROM session_ram_modules
+    WHERE session_id = ?
+");
+    $stmt->execute([$sessionId]);
+
+    $stmt = $pdo->prepare("
+    DELETE FROM session_disks
+    WHERE session_id = ?
+");
+    $stmt->execute([$sessionId]);
+
 
     $insertObservation = $pdo->prepare("
         INSERT INTO observations
@@ -228,12 +239,10 @@ try {
             $valueText = $value
                 ? 'true'
                 : 'false';
-        }
-        elseif (is_numeric($value)) {
+        } elseif (is_numeric($value)) {
 
             $valueNumber = $value;
-        }
-        else {
+        } else {
 
             $valueText = trim(
                 (string)$value
@@ -247,8 +256,66 @@ try {
             $valueText
         ]);
     }
+    if (!empty($data['ram_modules']) && is_array($data['ram_modules'])) {
 
+        $stmtRam = $pdo->prepare("
+        INSERT INTO session_ram_modules
+        (
+            session_id,
+            device_locator,
+            bank_label,
+            capacity_gb,
+            rated_speed_mhz,
+            configured_speed_mhz,
+            manufacturer,
+            part_number
+        )
+        VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
 
+        foreach ($data['ram_modules'] as $ram) {
+
+            $stmtRam->execute([
+                $sessionId,
+                $ram['device_locator'] ?? null,
+                $ram['bank_label'] ?? null,
+                $ram['capacity_gb'] ?? null,
+                $ram['rated_speed_mhz'] ?? null,
+                $ram['configured_speed_mhz'] ?? null,
+                $ram['manufacturer'] ?? null,
+                $ram['part_number'] ?? null
+            ]);
+        }
+    }
+    if (!empty($data['physical_disks']) && is_array($data['physical_disks'])) {
+
+        $stmtDisk = $pdo->prepare("
+        INSERT INTO session_disks
+        (
+            session_id,
+            model,
+            media_type,
+            bus_type,
+            capacity_gb,
+            health_status
+        )
+        VALUES
+        (?, ?, ?, ?, ?, ?)
+    ");
+
+        foreach ($data['physical_disks'] as $disk) {
+
+            $stmtDisk->execute([
+                $sessionId,
+                $disk['model'] ?? null,
+                $disk['media_type'] ?? null,
+                $disk['bus_type'] ?? null,
+                $disk['capacity_gb'] ?? null,
+                $disk['health_status'] ?? null
+            ]);
+        }
+    }
     /*
     |--------------------------------------------------------------------------
     | Mark collector as received
@@ -276,9 +343,7 @@ try {
         'collector_status' => 'RECEIVED',
         'next_node' => 'ROOT-S015'
     ]);
-
-}
-catch (Throwable $e) {
+} catch (Throwable $e) {
 
     $pdo->rollBack();
 

@@ -1,8 +1,8 @@
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [int]$SessionId,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$CollectorToken
 )
 $ErrorActionPreference = "SilentlyContinue"
@@ -328,6 +328,36 @@ Write-Host ""
 try {
 
     $jsonPath = Join-Path $PSScriptRoot "pc_check_result.json"
+    $ramModuleJson = @()
+
+    foreach ($m in $ramModules) {
+        $ramModuleJson += [ordered]@{
+            device_locator       = [string]$m.DeviceLocator
+            bank_label           = [string]$m.BankLabel
+            capacity_gb          = [math]::Round($m.Capacity / 1GB, 1)
+            rated_speed_mhz      = $m.Speed
+            configured_speed_mhz = $m.ConfiguredClockSpeed
+            manufacturer         = [string]$m.Manufacturer
+            part_number          = if ($m.PartNumber) {
+                $m.PartNumber.Trim()
+            }
+            else {
+                ""
+            }
+        }
+    }
+
+    $physicalDiskJson = @()
+
+    foreach ($d in $physicalDisks) {
+        $physicalDiskJson += [ordered]@{
+            model         = [string]$d.FriendlyName
+            media_type    = [string]$d.MediaType
+            bus_type      = [string]$d.BusType
+            capacity_gb   = [math]::Round($d.Size / 1GB, 1)
+            health_status = [string]$d.HealthStatus
+        }
+    }
 
     $result = [ordered]@{
         collector_status         = "success"
@@ -341,6 +371,10 @@ try {
         cpu_model                = [string]$cpu.Name
 
         uptime_hours             = [math]::Round($uptime.TotalHours, 1)
+        
+        ram_modules              = $ramModuleJson
+        physical_disks           = $physicalDiskJson
+
 
         ram_total_gb             = $totalRamGB
         ram_used_pct             = $ramUsedPct
