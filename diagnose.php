@@ -137,6 +137,23 @@ function includeFindingBlock(array $f)
                 )
             );
             ?>
+            <?php if (!empty($f['rendered_recommendation'])): ?>
+
+                <div style="margin-top:8px;">
+
+                    <strong>Recommendation:</strong>
+
+                    <?php
+                    echo nl2br(
+                        htmlspecialchars(
+                            $f['rendered_recommendation']
+                        )
+                    );
+                    ?>
+
+                </div>
+
+            <?php endif; ?>
         </div>
 
         <?php
@@ -303,7 +320,7 @@ function renderFindingTemplate(
             if (is_numeric($value)) {
                 $value = fmtNumber($value);
             }
-            
+
             if ($value === null) {
                 return '?';
             }
@@ -449,7 +466,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
         */
 
         $stmtMsg = $pdo->prepare("
-            SELECT *
+            SELECT     title_template,body_template,recommendation_template
             FROM finding_messages
             WHERE message_code = ?
         ");
@@ -509,6 +526,15 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
             $sessionId,
             $message['body_template']
         );
+        $renderedRecommendation = null;
+
+        if (!empty($message['recommendation_template'])) {
+            $renderedRecommendation = renderFindingTemplate(
+                $pdo,
+                $sessionId,
+                $message['recommendation_template']
+            );
+        }
         $stmtInsert = $pdo->prepare("
             INSERT INTO session_findings
             (
@@ -518,10 +544,11 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 severity,
                 rendered_title,
                 rendered_body,
+                rendered_recommendation,
                 generated_at
             )
             VALUES
-            (?, ?, ?, ?, ?, ?, NOW())
+            (?, ?, ?, ?, ?, ?,?, NOW())
         ");
 
         $stmtInsert->execute([
@@ -530,7 +557,8 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
             $rule['finding_code'],
             $rule['severity'],
             $renderedTitle,
-            $renderedBody
+            $renderedBody,
+            $renderedRecommendation
         ]);
     }
 }
