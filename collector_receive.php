@@ -291,20 +291,31 @@ try {
     if (!empty($data['physical_disks']) && is_array($data['physical_disks'])) {
 
         $stmtDisk = $pdo->prepare("
-        INSERT INTO session_disks
-        (
-            session_id,
-            model,
-            media_type,
-            bus_type,
-            capacity_gb,
-            health_status
-        )
-        VALUES
-        (?, ?, ?, ?, ?, ?)
+INSERT INTO session_disks
+(
+    session_id,
+    model,
+    media_type,
+    bus_type,
+    capacity_gb,
+    health_status,
+    is_system_disk
+)
+VALUES
+(?, ?, ?, ?, ?, ?, ?)
     ");
 
         foreach ($data['physical_disks'] as $disk) {
+            $isSystemDisk =
+                (
+                    !empty($data['system_disk_model'])
+                    &&
+                    isset($disk['model'])
+                    &&
+                    trim($disk['model']) === trim($data['system_disk_model'])
+                )
+                ? 1
+                : 0;
 
             $stmtDisk->execute([
                 $sessionId,
@@ -312,7 +323,8 @@ try {
                 $disk['media_type'] ?? null,
                 $disk['bus_type'] ?? null,
                 $disk['capacity_gb'] ?? null,
-                $disk['health_status'] ?? null
+                $disk['health_status'] ?? null,
+                $isSystemDisk
             ]);
         }
     }

@@ -1084,7 +1084,28 @@ if (
         $sessionId,
         'system_disk_bus'
     );
+    $stmt = $pdo->prepare("
+    SELECT *
+    FROM session_disks
+    WHERE session_id = ?
+    ORDER BY session_disk_id
+");
 
+    $stmt->execute([$sessionId]);
+
+    $sessionDisks = $stmt->fetchAll();
+
+
+    $stmt = $pdo->prepare("
+    SELECT *
+    FROM session_ram_modules
+    WHERE session_id = ?
+    ORDER BY session_ram_id
+");
+
+    $stmt->execute([$sessionId]);
+
+    $sessionRamModules = $stmt->fetchAll();
     /*
     |--------------------------------------------------------------------------
     | Basic machine summary
@@ -1752,38 +1773,79 @@ $previousSuggestions = $stmt->fetchAll();
                             <?php endif; ?>
 
                         <?php endif; ?>
+                        <?php if (count($sessionRamModules) > 0): ?>
+
+                            <div style="margin-top:10px;">
+
+                                <strong>RAM modules:</strong>
+
+                                <?php foreach ($sessionRamModules as $ram): ?>
+
+                                    <div style="margin-top:5px;">
+
+                                        <?php echo htmlspecialchars($ram['device_locator'] ?? 'Slot'); ?>:
+
+                                        <?php echo fmtNumber($ram['capacity_gb']); ?> GB
+
+                                        <?php if (!empty($ram['configured_speed_mhz'])): ?>
+                                            —
+                                            <?php echo (int)$ram['configured_speed_mhz']; ?> MHz
+                                        <?php endif; ?>
+
+                                        <?php if (!empty($ram['manufacturer'])): ?>
+                                            —
+                                            <?php echo htmlspecialchars($ram['manufacturer']); ?>
+                                        <?php endif; ?>
+
+                                    </div>
+
+                                <?php endforeach; ?>
+
+                            </div>
+
+                        <?php endif; ?>
 
 
                         <br>
 
-                        <strong>Storage:</strong>
+                        <?php if (count($sessionDisks) > 0): ?>
 
-                        <?php if ($physicalDiskSize !== null): ?>
+                            <div style="margin-top:12px;">
 
-                            <?php echo fmtNumber($physicalDiskSize); ?> GB
+                                <strong>Storage devices:</strong>
 
-                        <?php endif; ?>
+                                <div style="margin-top:6px;">
 
-                        <?php if (!empty($diskBus)): ?>
+                                    <?php foreach ($sessionDisks as $disk): ?>
 
-                            <?php echo htmlspecialchars($diskBus); ?>
+                                        <div style="margin-bottom:6px;">
 
-                        <?php endif; ?>
+                                            <?php echo htmlspecialchars($disk['model'] ?? 'Unknown disk'); ?>
 
-                        <?php if (!empty($physicalDiskType)): ?>
+                                            —
+                                            <?php echo fmtNumber($disk['capacity_gb']); ?> GB
 
-                            <?php echo htmlspecialchars($physicalDiskType); ?>
+                                            <?php if (!empty($disk['bus_type'])): ?>
+                                                <?php echo htmlspecialchars($disk['bus_type']); ?>
+                                            <?php endif; ?>
 
-                        <?php endif; ?>
+                                            <?php if (!empty($disk['media_type'])): ?>
+                                                <?php echo htmlspecialchars($disk['media_type']); ?>
+                                            <?php endif; ?>
 
+                                            <?php if (!empty($disk['health_status'])): ?>
+                                                —
+                                                Health:
+                                                <?php echo htmlspecialchars($disk['health_status']); ?>
+                                            <?php endif; ?>
 
-                        <br>
-                        <?php if (!empty($physicalDiskHealth)): ?>
+                                        </div>
 
-                            <br>
+                                    <?php endforeach; ?>
 
-                            <strong>Disk health:</strong>
-                            <?php echo htmlspecialchars($physicalDiskHealth); ?>
+                                </div>
+
+                            </div>
 
                         <?php endif; ?>
 
