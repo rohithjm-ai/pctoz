@@ -347,17 +347,37 @@ try {
         }
     }
 
-    $physicalDiskJson = @()
+    $reliability = $null
 
-    foreach ($d in $physicalDisks) {
-        $physicalDiskJson += [ordered]@{
-            model         = [string]$d.FriendlyName
-            media_type    = [string]$d.MediaType
-            bus_type      = [string]$d.BusType
-            capacity_gb   = [math]::Round($d.Size / 1GB, 1)
-            health_status = [string]$d.HealthStatus
-        }
+    try {
+        $reliability = $d | Get-StorageReliabilityCounter
     }
+    catch {
+        $reliability = $null
+    }
+
+    $physicalDiskJson += [ordered]@{
+        model                    = [string]$d.FriendlyName
+        media_type               = [string]$d.MediaType
+        bus_type                 = [string]$d.BusType
+        capacity_gb              = [math]::Round($d.Size / 1GB, 1)
+        health_status            = [string]$d.HealthStatus
+
+        reliability_status       = if ($reliability) { "success" } else { "unavailable" }
+
+        temperature_c            = if ($reliability) { $reliability.Temperature } else { $null }
+        power_on_hours           = if ($reliability) { $reliability.PowerOnHours } else { $null }
+        wear                     = if ($reliability) { $reliability.Wear } else { $null }
+
+        read_errors_total        = if ($reliability) { $reliability.ReadErrorsTotal } else { $null }
+        read_errors_corrected    = if ($reliability) { $reliability.ReadErrorsCorrected } else { $null }
+        read_errors_uncorrected  = if ($reliability) { $reliability.ReadErrorsUncorrected } else { $null }
+
+        write_errors_total       = if ($reliability) { $reliability.WriteErrorsTotal } else { $null }
+        write_errors_corrected   = if ($reliability) { $reliability.WriteErrorsCorrected } else { $null }
+        write_errors_uncorrected = if ($reliability) { $reliability.WriteErrorsUncorrected } else { $null }
+    }
+
 
     $result = [ordered]@{
         collector_status         = "success"

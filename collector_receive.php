@@ -299,7 +299,17 @@ INSERT INTO session_disks
     bus_type,
     capacity_gb,
     health_status,
-    is_system_disk
+    is_system_disk,
+    temperature_c,
+power_on_hours,
+wear,
+read_errors_total,
+read_errors_corrected,
+read_errors_uncorrected,
+write_errors_total,
+write_errors_corrected,
+write_errors_uncorrected,
+reliability_status
 )
 VALUES
 (?, ?, ?, ?, ?, ?, ?)

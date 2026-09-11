@@ -1,5 +1,5 @@
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$Url
 )
 
@@ -22,7 +22,7 @@ try {
             $name, $value = $part -split '=', 2
 
             $pairs[$name] =
-                [System.Uri]::UnescapeDataString($value)
+            [System.Uri]::UnescapeDataString($value)
         }
     }
 
@@ -45,14 +45,20 @@ try {
     Write-Host ""
 
     $PcCheckPath =
-        Join-Path $PSScriptRoot "pc_check.ps1"
+    Join-Path $PSScriptRoot "pc_check.ps1"
 
-    & powershell.exe `
-        -NoProfile `
-        -ExecutionPolicy Bypass `
-        -File $PcCheckPath `
-        -SessionId $SessionId `
-        -CollectorToken $CollectorToken
+    $arguments = @(
+        '-NoProfile'
+        '-ExecutionPolicy', 'Bypass'
+        '-File', "`"$PcCheckPath`""
+        '-SessionId', $SessionId
+        '-CollectorToken', "`"$CollectorToken`""
+    )
+
+    Start-Process powershell.exe `
+        -Verb RunAs `
+        -ArgumentList $arguments `
+        -Wait
 }
 catch {
 
