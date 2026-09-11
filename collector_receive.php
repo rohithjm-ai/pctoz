@@ -288,39 +288,47 @@ try {
             ]);
         }
     }
-    if (!empty($data['physical_disks']) && is_array($data['physical_disks'])) {
+    if (
+        !empty($data['physical_disks'])
+        && is_array($data['physical_disks'])
+    ) {
 
         $stmtDisk = $pdo->prepare("
-INSERT INTO session_disks
-(
-    session_id,
-    model,
-    media_type,
-    bus_type,
-    capacity_gb,
-    health_status,
-    is_system_disk,
-    temperature_c,
-power_on_hours,
-wear,
-read_errors_total,
-read_errors_corrected,
-read_errors_uncorrected,
-write_errors_total,
-write_errors_corrected,
-write_errors_uncorrected,
-reliability_status
-)
-VALUES
-(?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO session_disks
+        (
+            session_id,
+            model,
+            media_type,
+            bus_type,
+            capacity_gb,
+            health_status,
+            is_system_disk,
+            temperature_c,
+            power_on_hours,
+            wear,
+            read_errors_total,
+            read_errors_corrected,
+            read_errors_uncorrected,
+            write_errors_total,
+            write_errors_corrected,
+            write_errors_uncorrected,
+            reliability_status
+        )
+        VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
         foreach ($data['physical_disks'] as $disk) {
+
+            if (!is_array($disk)) {
+                continue;
+            }
+
             $isSystemDisk =
                 (
                     !empty($data['system_disk_model'])
                     &&
-                    isset($disk['model'])
+                    !empty($disk['model'])
                     &&
                     trim($disk['model']) === trim($data['system_disk_model'])
                 )
@@ -334,7 +342,17 @@ VALUES
                 $disk['bus_type'] ?? null,
                 $disk['capacity_gb'] ?? null,
                 $disk['health_status'] ?? null,
-                $isSystemDisk
+                $isSystemDisk,
+                $disk['temperature_c'] ?? null,
+                $disk['power_on_hours'] ?? null,
+                $disk['wear'] ?? null,
+                $disk['read_errors_total'] ?? null,
+                $disk['read_errors_corrected'] ?? null,
+                $disk['read_errors_uncorrected'] ?? null,
+                $disk['write_errors_total'] ?? null,
+                $disk['write_errors_corrected'] ?? null,
+                $disk['write_errors_uncorrected'] ?? null,
+                $disk['reliability_status'] ?? null
             ]);
         }
     }
