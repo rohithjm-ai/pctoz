@@ -356,7 +356,20 @@ try {
         $reliability = $null
     }
 
-    $physicalDiskJson += [ordered]@{
+$physicalDiskJson = @()
+
+foreach ($d in $physicalDisks) {
+
+    $reliability = $null
+
+    try {
+        $reliability = $d | Get-StorageReliabilityCounter
+    }
+    catch {
+        $reliability = $null
+    }
+
+    $diskItem = [PSCustomObject][ordered]@{
         model                    = [string]$d.FriendlyName
         media_type               = [string]$d.MediaType
         bus_type                 = [string]$d.BusType
@@ -378,6 +391,9 @@ try {
         write_errors_uncorrected = if ($reliability) { $reliability.WriteErrorsUncorrected } else { $null }
     }
 
+    $physicalDiskJson += $diskItem
+}
+
 
     $result = [ordered]@{
         collector_status         = "success"
@@ -393,7 +409,7 @@ try {
         uptime_hours             = [math]::Round($uptime.TotalHours, 1)
         
         ram_modules              = $ramModuleJson
-        physical_disks           = $physicalDiskJson
+        physical_disks           = @($physicalDiskJson)
 
 
         ram_total_gb             = $totalRamGB
