@@ -728,6 +728,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
             (
                 session_id,
                 finding_rule_id,
+                disk_finding_rule_id,
                 finding_code,
                 severity,
                 rendered_title,
@@ -746,6 +747,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 ?,
                 ?,
                 ?,
+                ?,
                 'DISK',
                 ?,
                 NOW()
@@ -754,6 +756,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
 
             $stmtInsert->execute([
                 $sessionId,
+                $rule['disk_finding_rule_id'],
                 $rule['finding_code'],
                 $rule['severity'],
                 $renderedTitle,
@@ -2019,7 +2022,29 @@ $previousSuggestions = $stmt->fetchAll();
                                 <div style="margin-top:6px;">
 
                                     <?php foreach ($sessionDisks as $disk): ?>
+                                        <?php
+                                        $diskCondition = 'No warning detected';
 
+                                        foreach ($sessionFindings as $sf) {
+
+                                            if (
+                                                ($sf['source_entity_type'] ?? '') === 'DISK'
+                                                &&
+                                                (int)($sf['source_entity_id'] ?? 0)
+                                                === (int)$disk['session_disk_id']
+                                            ) {
+
+                                                $severity = strtoupper($sf['severity'] ?? '');
+
+                                                if ($severity === 'CRITICAL') {
+                                                    $diskCondition = 'Urgent';
+                                                } elseif (in_array($severity, ['ATTENTION', 'IMPORTANT', 'WARNING'])) {
+                                                    $diskCondition = 'Needs attention';
+                                                } elseif ($severity === 'ADVISORY') {
+                                                    $diskCondition = 'Monitor';
+                                                }
+                                            }
+                                        } ?>
                                         <div style="margin-bottom:6px;">
 
                                             <?php echo htmlspecialchars($disk['model'] ?? 'Unknown disk'); ?>
@@ -2040,8 +2065,12 @@ $previousSuggestions = $stmt->fetchAll();
                                                 Windows status:
                                                 <?php echo htmlspecialchars($disk['health_status']); ?>
                                             <?php endif; ?>
+                                            <br>
+                                            <strong>PCTOZ condition:</strong>
+                                            <?php echo htmlspecialchars($diskCondition); ?>
 
                                         </div>
+
                                         <?php if (($disk['reliability_status'] ?? '') === 'success'): ?>
 
                                             <div style="margin-left:18px;font-size:13px;color:#555;">
