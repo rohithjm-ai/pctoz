@@ -561,6 +561,208 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
             $renderedRecommendation
         ]);
     }
+    /*
+|--------------------------------------------------------------------------
+| DISK-SPECIFIC FINDINGS
+|--------------------------------------------------------------------------
+*/
+
+    $stmtDisks = $pdo->prepare("
+    SELECT *
+    FROM session_disks
+    WHERE session_id = ?
+");
+
+    $stmtDisks->execute([$sessionId]);
+
+    $disks = $stmtDisks->fetchAll();
+
+
+    $stmtDiskRules = $pdo->prepare("
+    SELECT *
+    FROM disk_finding_rules
+    WHERE active = 1
+    ORDER BY priority, disk_finding_rule_id
+");
+
+    $stmtDiskRules->execute();
+
+    $diskRules = $stmtDiskRules->fetchAll();
+
+
+    foreach ($disks as $disk) {
+
+        foreach ($diskRules as $rule) {
+
+            $fieldCode = $rule['field_code'];
+
+            if (!array_key_exists($fieldCode, $disk)) {
+                continue;
+            }
+
+            $actual = $disk[$fieldCode];
+
+            if ($actual === null) {
+                continue;
+            }
+
+            $matched = compareFindingValue(
+                $actual,
+                $rule['operator'],
+                $rule['compare_value']
+            );
+
+            if (!$matched) {
+                continue;
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Load message
+        |--------------------------------------------------------------------------
+        */
+
+            $stmtMessage = $pdo->prepare("
+            SELECT
+                title_template,
+                body_template,
+                recommendation_template
+            FROM finding_messages
+            WHERE message_code = ?
+        ");
+
+            $stmtMessage->execute([
+                $rule['message_code']
+            ]);
+
+            $message = $stmtMessage->fetch();
+
+            if (!$message) {
+                continue;
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Render disk-specific placeholders
+        |--------------------------------------------------------------------------
+        */
+
+            $replacements = [
+                '{disk_model}' =>
+                $disk['model'] ?? '',
+
+                '{read_errors_total}' =>
+                fmtNumber($disk['read_errors_total'] ?? 0),
+
+                '{read_errors_corrected}' =>
+                fmtNumber($disk['read_errors_corrected'] ?? 0),
+
+                '{read_errors_uncorrected}' =>
+                fmtNumber($disk['read_errors_uncorrected'] ?? 0),
+
+                '{temperature_c}' =>
+                fmtNumber($disk['temperature_c'] ?? 0),
+
+                '{power_on_hours}' =>
+                fmtNumber($disk['power_on_hours'] ?? 0)
+            ];
+
+            $renderedTitle = strtr(
+                $message['title_template'],
+                $replacements
+            );
+
+            $renderedBody = strtr(
+                $message['body_template'],
+                $replacements
+            );
+
+            $renderedRecommendation = null;
+
+            if (!empty($message['recommendation_template'])) {
+
+                $renderedRecommendation = strtr(
+                    $message['recommendation_template'],
+                    $replacements
+                );
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Avoid duplicate finding for same disk
+        |--------------------------------------------------------------------------
+        */
+
+            $stmtCheck = $pdo->prepare("
+            SELECT session_finding_id
+            FROM session_findings
+            WHERE session_id = ?
+              AND finding_code = ?
+              AND source_entity_type = 'DISK'
+              AND source_entity_id = ?
+            LIMIT 1
+        ");
+
+            $stmtCheck->execute([
+                $sessionId,
+                $rule['finding_code'],
+                $disk['session_disk_id']
+            ]);
+
+            if ($stmtCheck->fetch()) {
+                continue;
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Insert disk finding
+        |--------------------------------------------------------------------------
+        */
+
+            $stmtInsert = $pdo->prepare("
+            INSERT INTO session_findings
+            (
+                session_id,
+                finding_rule_id,
+                finding_code,
+                severity,
+                rendered_title,
+                rendered_body,
+                rendered_recommendation,
+                source_entity_type,
+                source_entity_id,
+                generated_at
+            )
+            VALUES
+            (
+                ?,
+                NULL,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                'DISK',
+                ?,
+                NOW()
+            )
+        ");
+
+            $stmtInsert->execute([
+                $sessionId,
+                $rule['finding_code'],
+                $rule['severity'],
+                $renderedTitle,
+                $renderedBody,
+                $renderedRecommendation,
+                $disk['session_disk_id']
+            ]);
+        }
+    }
 }
 
 /*
@@ -1835,11 +2037,43 @@ $previousSuggestions = $stmt->fetchAll();
 
                                             <?php if (!empty($disk['health_status'])): ?>
                                                 —
-                                                Health:
+                                                Windows status:
                                                 <?php echo htmlspecialchars($disk['health_status']); ?>
                                             <?php endif; ?>
 
                                         </div>
+                                        <?php if (($disk['reliability_status'] ?? '') === 'success'): ?>
+
+                                            <div style="margin-left:18px;font-size:13px;color:#555;">
+
+                                                <?php if ($disk['temperature_c'] !== null): ?>
+                                                    Temperature:
+                                                    <?php echo (int)$disk['temperature_c']; ?>°C
+                                                    &nbsp;·&nbsp;
+                                                <?php endif; ?>
+
+                                                <?php if ($disk['power_on_hours'] !== null): ?>
+                                                    Power-on:
+                                                    <?php echo number_format((int)$disk['power_on_hours']); ?> hours
+                                                    &nbsp;·&nbsp;
+                                                <?php endif; ?>
+
+                                                <?php if ($disk['read_errors_total'] !== null): ?>
+                                                    Read errors:
+                                                    <?php echo number_format((int)$disk['read_errors_total']); ?>
+
+                                                    <?php if ($disk['read_errors_corrected'] !== null): ?>
+                                                        (
+                                                        <?php echo number_format((int)$disk['read_errors_corrected']); ?>
+                                                        corrected
+                                                        )
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+
+                                            </div>
+
+                                        <?php endif; ?>
+
 
                                     <?php endforeach; ?>
 
