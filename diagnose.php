@@ -2066,7 +2066,7 @@ $previousSuggestions = $stmt->fetchAll();
                                                 <?php echo htmlspecialchars($disk['health_status']); ?>
                                             <?php endif; ?>
                                             <br>
-                                            <strong>PCTOZ condition:</strong>
+                                            <strong>Storage condition:</strong>
                                             <?php echo htmlspecialchars($diskCondition); ?>
 
                                         </div>
