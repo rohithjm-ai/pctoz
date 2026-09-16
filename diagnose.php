@@ -591,6 +591,21 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
 
 
     foreach ($disks as $disk) {
+        $mediaType = strtoupper(trim($disk['media_type'] ?? ''));
+        $busType = strtoupper(trim($disk['bus_type'] ?? ''));
+
+        $deviceClass = 'ALL';
+
+        if ($mediaType === 'HDD') {
+
+            $deviceClass = 'HDD';
+        } elseif ($mediaType === 'SSD' && $busType === 'NVME') {
+
+            $deviceClass = 'SSD_NVME';
+        } elseif ($mediaType === 'SSD') {
+
+            $deviceClass = 'SSD_SATA';
+        }
 
         foreach ($diskRules as $rule) {
 
