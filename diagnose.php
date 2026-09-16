@@ -2075,13 +2075,13 @@ $previousSuggestions = $stmt->fetchAll();
 
                                             <div style="margin-left:18px;font-size:13px;color:#555;">
 
-                                                <?php if ($disk['temperature_c'] !== null): ?>
+                                                <?php if (isset($disk['temperature_c']) && (int)$disk['temperature_c'] > 0): ?>
                                                     Temperature:
                                                     <?php echo (int)$disk['temperature_c']; ?>°C
                                                     &nbsp;·&nbsp;
                                                 <?php endif; ?>
 
-                                                <?php if ($disk['power_on_hours'] !== null): ?>
+                                                <?php if (isset($disk['power_on_hours']) && (int)$disk['power_on_hours'] > 0): ?>
                                                     Power-on:
                                                     <?php echo number_format((int)$disk['power_on_hours']); ?> hours
                                                     &nbsp;·&nbsp;
