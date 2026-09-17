@@ -630,19 +630,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
             if ($actual === null) {
                 continue;
             }
-            echo "<pre>";
 
-            echo "DISK RULE DEBUG\n";
-            echo "Disk: " . ($disk['model'] ?? '') . "\n";
-            echo "Device class: " . $deviceClass . "\n";
-            echo "Rule: " . ($rule['finding_code'] ?? '') . "\n";
-            echo "Rule class: " . ($rule['device_class'] ?? '') . "\n";
-            echo "Field: " . ($rule['field_code'] ?? '') . "\n";
-            echo "Actual: " . var_export($actual, true) . "\n";
-            echo "Operator: " . ($rule['operator'] ?? '') . "\n";
-            echo "Compare: " . ($rule['compare_value'] ?? '') . "\n";
-
-            echo "</pre>";
             $matched = compareFindingValue(
                 $actual,
                 $rule['operator'],
@@ -801,6 +789,88 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 $renderedRecommendation,
                 $disk['session_disk_id']
             ]);
+        }
+    }
+    /*
+|--------------------------------------------------------------------------
+| DISK FINDING PRECEDENCE
+|--------------------------------------------------------------------------
+*/
+
+    $severityRank = [
+        'INFO' => 1,
+        'ADVISORY' => 2,
+        'ATTENTION' => 3,
+        'WARNING' => 3,
+        'IMPORTANT' => 3,
+        'CRITICAL' => 4
+    ];
+
+    $stmtDiskFindings = $pdo->prepare("
+    SELECT
+        sf.session_finding_id,
+        sf.source_entity_id,
+        sf.severity,
+        sf.disk_finding_rule_id,
+        dfr.suppress_lower_severity
+    FROM session_findings sf
+    LEFT JOIN disk_finding_rules dfr
+        ON dfr.disk_finding_rule_id = sf.disk_finding_rule_id
+    WHERE sf.session_id = ?
+      AND sf.source_entity_type = 'DISK'
+    ORDER BY sf.source_entity_id, sf.session_finding_id
+");
+
+    $stmtDiskFindings->execute([$sessionId]);
+
+    $diskFindings = $stmtDiskFindings->fetchAll();
+
+    $byDisk = [];
+
+    foreach ($diskFindings as $finding) {
+        $diskId = (int)$finding['source_entity_id'];
+        $byDisk[$diskId][] = $finding;
+    }
+
+    foreach ($byDisk as $diskId => $findings) {
+
+        $suppressingRank = null;
+
+        foreach ($findings as $finding) {
+
+            if ((int)($finding['suppress_lower_severity'] ?? 0) !== 1) {
+                continue;
+            }
+
+            $severity = strtoupper($finding['severity'] ?? '');
+
+            $rank = $severityRank[$severity] ?? 0;
+
+            if ($suppressingRank === null || $rank > $suppressingRank) {
+                $suppressingRank = $rank;
+            }
+        }
+
+        if ($suppressingRank === null) {
+            continue;
+        }
+
+        foreach ($findings as $finding) {
+
+            $severity = strtoupper($finding['severity'] ?? '');
+            $rank = $severityRank[$severity] ?? 0;
+
+            if ($rank < $suppressingRank) {
+
+                $stmtDelete = $pdo->prepare("
+                DELETE FROM session_findings
+                WHERE session_finding_id = ?
+            ");
+
+                $stmtDelete->execute([
+                    $finding['session_finding_id']
+                ]);
+            }
         }
     }
 }
