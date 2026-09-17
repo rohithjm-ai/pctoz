@@ -608,7 +608,17 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
         }
 
         foreach ($diskRules as $rule) {
+            $ruleDeviceClass = strtoupper(
+                trim($rule['device_class'] ?? 'ALL')
+            );
 
+            if (
+                $ruleDeviceClass !== 'ALL'
+                &&
+                $ruleDeviceClass !== $deviceClass
+            ) {
+                continue;
+            }
             $fieldCode = $rule['field_code'];
 
             if (!array_key_exists($fieldCode, $disk)) {
@@ -620,7 +630,19 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
             if ($actual === null) {
                 continue;
             }
+            echo "<pre>";
 
+            echo "DISK RULE DEBUG\n";
+            echo "Disk: " . ($disk['model'] ?? '') . "\n";
+            echo "Device class: " . $deviceClass . "\n";
+            echo "Rule: " . ($rule['finding_code'] ?? '') . "\n";
+            echo "Rule class: " . ($rule['device_class'] ?? '') . "\n";
+            echo "Field: " . ($rule['field_code'] ?? '') . "\n";
+            echo "Actual: " . var_export($actual, true) . "\n";
+            echo "Operator: " . ($rule['operator'] ?? '') . "\n";
+            echo "Compare: " . ($rule['compare_value'] ?? '') . "\n";
+
+            echo "</pre>";
             $matched = compareFindingValue(
                 $actual,
                 $rule['operator'],
@@ -870,6 +892,16 @@ if (
 
         $message = "Technician feedback saved.";
     }
+}
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && ($_POST['action'] ?? '') === 'regenerate_findings'
+) {
+
+    generateSessionFindings($pdo, $sessionId);
+
+    header("Location: diagnose.php");
+    exit;
 }
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
@@ -2546,9 +2578,19 @@ $previousSuggestions = $stmt->fetchAll();
                     type="submit">
                     Save Technician Feedback
                 </button>
+            </form>
+            <form method="post" style="margin-top:15px;">
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="regenerate_findings">
+
+                <button type="submit">
+                    Regenerate Findings
+                </button>
 
             </form>
-
         </div>
 
 
