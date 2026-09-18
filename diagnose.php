@@ -756,6 +756,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 disk_finding_rule_id,
                 finding_code,
                 severity,
+                rule_family,
                 rendered_title,
                 rendered_body,
                 rendered_recommendation,
@@ -773,6 +774,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 ?,
                 ?,
                 ?,
+                ?,
                 'DISK',
                 ?,
                 NOW()
@@ -784,6 +786,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 $rule['disk_finding_rule_id'],
                 $rule['finding_code'],
                 $rule['severity'],
+                $rule['rule_family'] ?? 'GENERAL',
                 $renderedTitle,
                 $renderedBody,
                 $renderedRecommendation,
@@ -811,6 +814,7 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
         sf.session_finding_id,
         sf.source_entity_id,
         sf.severity,
+        sf.rule_family,
         sf.disk_finding_rule_id,
         dfr.suppress_lower_severity
     FROM session_findings sf
@@ -825,14 +829,21 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
 
     $diskFindings = $stmtDiskFindings->fetchAll();
 
-    $byDisk = [];
+    $byDiskFamily = [];
 
     foreach ($diskFindings as $finding) {
-        $diskId = (int)$finding['source_entity_id'];
-        $byDisk[$diskId][] = $finding;
-    }
 
-    foreach ($byDisk as $diskId => $findings) {
+        $diskId = (int)$finding['source_entity_id'];
+
+        $family = strtoupper(
+            trim($finding['rule_family'] ?? 'GENERAL')
+        );
+
+        $key = $diskId . '|' . $family;
+
+        $byDiskFamily[$key][] = $finding;
+    }
+    foreach ($byDiskFamily as $key => $findings) {
 
         $suppressingRank = null;
 
