@@ -412,6 +412,8 @@ try {
     }
 
     $smartData = @()
+    $smartDiskSummary = @()
+    $seenSmartSerials = @{}
 
     if ($smartctlPath) {
 
@@ -437,6 +439,121 @@ try {
 
                     $smartObject = $jsonText |
                     ConvertFrom-Json -ErrorAction Stop
+                    $model = [string]$smartObject.model_name
+                    $serial = [string]$smartObject.serial_number
+
+                    if ([string]::IsNullOrWhiteSpace($serial)) {
+                        $uniqueKey = $devicePath
+                    }
+                    else {
+                        $uniqueKey = $serial
+                    }
+
+                    if ($seenSmartSerials.ContainsKey($uniqueKey)) {
+                        continue
+                    }
+
+                    $seenSmartSerials[$uniqueKey] = $true
+                    $attrs = @{}
+
+                    if ($smartObject.ata_smart_attributes.table) {
+
+                        foreach ($a in $smartObject.ata_smart_attributes.table) {
+
+                            $attrs[[int]$a.id] = $a
+                        }
+                    }
+                    $smartDiskSummary += [PSCustomObject]@{
+
+                        device_path            = $devicePath
+                        model                  = $model
+                        serial                 = $serial
+
+                        protocol               = [string]$smartObject.device.protocol
+
+                        smart_passed           =
+                        if ($null -ne $smartObject.smart_status.passed) {
+                            [bool]$smartObject.smart_status.passed
+                        }
+                        else {
+                            $null
+                        }
+
+                        temperature_c          =
+                        if ($null -ne $smartObject.temperature.current) {
+                            $smartObject.temperature.current
+                        }
+                        else {
+                            $null
+                        }
+
+                        power_on_hours         =
+                        if ($null -ne $smartObject.power_on_time.hours) {
+                            $smartObject.power_on_time.hours
+                        }
+                        else {
+                            $null
+                        }
+
+                        reallocated_sectors    =
+                        if ($attrs.ContainsKey(5)) {
+                            $attrs[5].raw.value
+                        }
+                        else {
+                            $null
+                        }
+
+                        pending_sectors        =
+                        if ($attrs.ContainsKey(197)) {
+                            $attrs[197].raw.value
+                        }
+                        else {
+                            $null
+                        }
+
+                        offline_uncorrectable  =
+                        if ($attrs.ContainsKey(198)) {
+                            $attrs[198].raw.value
+                        }
+                        else {
+                            $null
+                        }
+
+                        reported_uncorrectable =
+                        if ($attrs.ContainsKey(187)) {
+                            $attrs[187].raw.value
+                        }
+                        else {
+                            $null
+                        }
+
+                        udma_crc_errors        =
+                        if ($attrs.ContainsKey(199)) {
+                            $attrs[199].raw.value
+                        }
+                        else {
+                            $null
+                        }
+
+                        lifetime_remaining_pct =
+                        if ($attrs.ContainsKey(202)) {
+                            $attrs[202].value
+                        }
+                        else {
+                            $null
+                        }
+
+                        lifetime_used_pct      =
+                        if ($attrs.ContainsKey(202)) {
+                            $attrs[202].raw.value
+                        }
+                        else {
+                            $null
+                        }
+                    }
+ 
+
+
 
                     $smartData += [PSCustomObject]@{
                         device_path = $devicePath
@@ -473,6 +590,7 @@ try {
         
         ram_modules              = $ramModuleJson
         physical_disks           = @($physicalDiskJson)
+        smart_disk_summary       = @($smartDiskSummary)
 
 
         ram_total_gb             = $totalRamGB
