@@ -356,44 +356,107 @@ try {
         $reliability = $null
     }
 
-$physicalDiskJson = @()
+    $physicalDiskJson = @()
 
-foreach ($d in $physicalDisks) {
+    foreach ($d in $physicalDisks) {
 
-    $reliability = $null
-
-    try {
-        $reliability = $d | Get-StorageReliabilityCounter
-    }
-    catch {
         $reliability = $null
+
+        try {
+            $reliability = $d | Get-StorageReliabilityCounter
+        }
+        catch {
+            $reliability = $null
+        }
+
+        $diskItem = [PSCustomObject][ordered]@{
+            model                    = [string]$d.FriendlyName
+            media_type               = [string]$d.MediaType
+            bus_type                 = [string]$d.BusType
+            capacity_gb              = [math]::Round($d.Size / 1GB, 1)
+            health_status            = [string]$d.HealthStatus
+
+            reliability_status       = if ($reliability) { "success" } else { "unavailable" }
+
+            temperature_c            = if ($reliability) { $reliability.Temperature } else { $null }
+            power_on_hours           = if ($reliability) { $reliability.PowerOnHours } else { $null }
+            wear                     = if ($reliability) { $reliability.Wear } else { $null }
+
+            read_errors_total        = if ($reliability) { $reliability.ReadErrorsTotal } else { $null }
+            read_errors_corrected    = if ($reliability) { $reliability.ReadErrorsCorrected } else { $null }
+            read_errors_uncorrected  = if ($reliability) { $reliability.ReadErrorsUncorrected } else { $null }
+
+            write_errors_total       = if ($reliability) { $reliability.WriteErrorsTotal } else { $null }
+            write_errors_corrected   = if ($reliability) { $reliability.WriteErrorsCorrected } else { $null }
+            write_errors_uncorrected = if ($reliability) { $reliability.WriteErrorsUncorrected } else { $null }
+        }
+
+        $physicalDiskJson += $diskItem
+    }
+    # ------------------------------------------------------------
+    # OPTIONAL SMART / NVME DATA COLLECTION
+    # ------------------------------------------------------------
+
+    $smartctlCandidates = @(
+        (Join-Path $PSScriptRoot "smartctl.exe"),
+        "C:\Program Files\smartmontools\bin\smartctl.exe"
+    )
+
+    $smartctlPath = $null
+
+    foreach ($candidate in $smartctlCandidates) {
+        if (Test-Path $candidate) {
+            $smartctlPath = $candidate
+            break
+        }
     }
 
-    $diskItem = [PSCustomObject][ordered]@{
-        model                    = [string]$d.FriendlyName
-        media_type               = [string]$d.MediaType
-        bus_type                 = [string]$d.BusType
-        capacity_gb              = [math]::Round($d.Size / 1GB, 1)
-        health_status            = [string]$d.HealthStatus
+    $smartData = @()
 
-        reliability_status       = if ($reliability) { "success" } else { "unavailable" }
+    if ($smartctlPath) {
 
-        temperature_c            = if ($reliability) { $reliability.Temperature } else { $null }
-        power_on_hours           = if ($reliability) { $reliability.PowerOnHours } else { $null }
-        wear                     = if ($reliability) { $reliability.Wear } else { $null }
+        try {
+            $scanText = & $smartctlPath --scan-open 2>&1
 
-        read_errors_total        = if ($reliability) { $reliability.ReadErrorsTotal } else { $null }
-        read_errors_corrected    = if ($reliability) { $reliability.ReadErrorsCorrected } else { $null }
-        read_errors_uncorrected  = if ($reliability) { $reliability.ReadErrorsUncorrected } else { $null }
+            foreach ($line in $scanText) {
 
-        write_errors_total       = if ($reliability) { $reliability.WriteErrorsTotal } else { $null }
-        write_errors_corrected   = if ($reliability) { $reliability.WriteErrorsCorrected } else { $null }
-        write_errors_uncorrected = if ($reliability) { $reliability.WriteErrorsUncorrected } else { $null }
+                if ($line -notmatch '^(\S+)') {
+                    continue
+                }
+
+                $devicePath = $matches[1]
+
+                try {
+
+                    $jsonText = & $smartctlPath `
+                        -a `
+                        -j `
+                        $devicePath 2>&1
+
+                    $jsonText = $jsonText -join "`n"
+
+                    $smartObject = $jsonText |
+                    ConvertFrom-Json -ErrorAction Stop
+
+                    $smartData += [PSCustomObject]@{
+                        device_path = $devicePath
+                        raw         = $smartObject
+                    }
+                }
+                catch {
+
+                    $smartData += [PSCustomObject]@{
+                        device_path = $devicePath
+                        raw         = $null
+                        error       = $_.Exception.Message
+                    }
+                }
+            }
+        }
+        catch {
+            # smartctl exists, but scanning failed
+        }
     }
-
-    $physicalDiskJson += $diskItem
-}
-
 
     $result = [ordered]@{
         collector_status         = "success"
@@ -420,6 +483,9 @@ foreach ($d in $physicalDisks) {
         ram_slots_free           = $freeSlots
 
         system_drive             = [string]$systemDriveLetter
+        smartctl_available       = [bool]$smartctlPath
+        smart_devices            = @($smartData)
+
 
         system_drive_size_gb     = $systemDriveSizeGB
         system_drive_free_gb     = $systemDriveFreeGB
@@ -469,7 +535,7 @@ foreach ($d in $physicalDisks) {
         }
     }
 
-    $jsonText = $result | ConvertTo-Json -Depth 5
+    $jsonText = $result | ConvertTo-Json -Depth 10
 
     [System.IO.File]::WriteAllText(
         $jsonPath,
