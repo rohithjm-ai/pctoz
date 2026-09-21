@@ -313,9 +313,17 @@ try {
             write_errors_corrected,
             write_errors_uncorrected,
             reliability_status
+            serial_number,
+            smart_available,
+            smart_passed,
+            smart_reallocated_sectors,
+            smart_pending_sectors,
+            smart_offline_uncorrectable,
+            smart_lifetime_remaining_pct,
+smart_lifetime_used_pct
         )
         VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
         foreach ($data['physical_disks'] as $disk) {
@@ -352,7 +360,18 @@ try {
                 $disk['write_errors_total'] ?? null,
                 $disk['write_errors_corrected'] ?? null,
                 $disk['write_errors_uncorrected'] ?? null,
-                $disk['reliability_status'] ?? null
+                $disk['reliability_status'] ?? null,
+                $disk['serial_number'] ?? null,
+                !empty($disk['smart_available']) ? 1 : 0,
+                array_key_exists('smart_passed', $disk) && $disk['smart_passed'] !== null
+                    ? ($disk['smart_passed'] ? 1 : 0)
+                    : null,
+                $disk['smart_reallocated_sectors'] ?? null,
+                $disk['smart_pending_sectors'] ?? null,
+                $disk['smart_offline_uncorrectable'] ?? null,
+                $disk['smart_lifetime_remaining_pct'] ?? null,
+                $disk['smart_lifetime_used_pct'] ?? null
+
             ]);
         }
     }

@@ -371,6 +371,7 @@ try {
 
         $diskItem = [PSCustomObject][ordered]@{
             model                    = [string]$d.FriendlyName
+            serial_number            = [string]$d.SerialNumber
             media_type               = [string]$d.MediaType
             bus_type                 = [string]$d.BusType
             capacity_gb              = [math]::Round($d.Size / 1GB, 1)
@@ -394,6 +395,62 @@ try {
         $physicalDiskJson += $diskItem
     }
     # ------------------------------------------------------------
+    # MERGE SMART SUMMARY INTO PHYSICAL DISKS BY SERIAL NUMBER
+    # ------------------------------------------------------------
+
+    $smartBySerial = @{}
+
+    foreach ($s in $smartDiskSummary) {
+
+        $serial = ([string]$s.serial).Trim()
+
+        if (-not [string]::IsNullOrWhiteSpace($serial)) {
+            $smartBySerial[$serial] = $s
+        }
+    }
+
+    foreach ($d in $physicalDiskJson) {
+
+        $serial = ([string]$d.serial_number).Trim()
+
+        if (
+            -not [string]::IsNullOrWhiteSpace($serial) -and
+            $smartBySerial.ContainsKey($serial)
+        ) {
+
+            $s = $smartBySerial[$serial]
+
+            $d['smart_available'] = $true
+            $d['smart_passed'] = $s.smart_passed
+
+            $d['smart_reallocated_sectors'] =
+            $s.reallocated_sectors
+
+            $d['smart_pending_sectors'] =
+            $s.pending_sectors
+
+            $d['smart_offline_uncorrectable'] =
+            $s.offline_uncorrectable
+
+            $d['smart_lifetime_remaining_pct'] =
+            $s.lifetime_remaining_pct
+
+            $d['smart_lifetime_used_pct'] =
+            $s.lifetime_used_pct
+        }
+        else {
+
+            $d['smart_available'] = $false
+            $d['smart_passed'] = $null
+            $d['smart_reallocated_sectors'] = $null
+            $d['smart_pending_sectors'] = $null
+            $d['smart_offline_uncorrectable'] = $null
+            $d['smart_lifetime_remaining_pct'] = $null
+            $d['smart_lifetime_used_pct'] = $null
+        }
+    }
+
+    # ------------------------------------------------------------
     # OPTIONAL SMART / NVME DATA COLLECTION
     # ------------------------------------------------------------
 
@@ -414,6 +471,25 @@ try {
     $smartData = @()
     $smartDiskSummary = @()
     $seenSmartSerials = @{}
+    function Get-SmartRawNumber {
+        param($Attribute)
+
+        if ($null -eq $Attribute) {
+            return $null
+        }
+
+        $rawString = [string]$Attribute.raw.string
+
+        if ($rawString -match '^\s*(-?\d+)') {
+            return [long]$matches[1]
+        }
+
+        if ($null -ne $Attribute.raw.value) {
+            return [long]$Attribute.raw.value
+        }
+
+        return $null
+    }
 
     if ($smartctlPath) {
 
@@ -441,6 +517,18 @@ try {
                     ConvertFrom-Json -ErrorAction Stop
                     $model = [string]$smartObject.model_name
                     $serial = [string]$smartObject.serial_number
+                    if (
+                        [string]::IsNullOrWhiteSpace($model) -and
+                        [string]::IsNullOrWhiteSpace($serial)
+                    ) {
+                        continue
+                    }
+                    if (
+                        $null -ne $smartObject.smart_support.available -and
+                        $smartObject.smart_support.available -eq $false
+                    ) {
+                        continue
+                    }
 
                     if ([string]::IsNullOrWhiteSpace($serial)) {
                         $uniqueKey = $devicePath
@@ -497,7 +585,7 @@ try {
 
                         reallocated_sectors    =
                         if ($attrs.ContainsKey(5)) {
-                            $attrs[5].raw.value
+                            Get-SmartRawNumber $attrs[5]
                         }
                         else {
                             $null
@@ -505,7 +593,7 @@ try {
 
                         pending_sectors        =
                         if ($attrs.ContainsKey(197)) {
-                            $attrs[197].raw.value
+                            Get-SmartRawNumber $attrs[197]
                         }
                         else {
                             $null
@@ -513,7 +601,7 @@ try {
 
                         offline_uncorrectable  =
                         if ($attrs.ContainsKey(198)) {
-                            $attrs[198].raw.value
+                            Get-SmartRawNumber $attrs[198]
                         }
                         else {
                             $null
@@ -521,7 +609,7 @@ try {
 
                         reported_uncorrectable =
                         if ($attrs.ContainsKey(187)) {
-                            $attrs[187].raw.value
+                            Get-SmartRawNumber $attrs[187]
                         }
                         else {
                             $null
@@ -529,7 +617,7 @@ try {
 
                         udma_crc_errors        =
                         if ($attrs.ContainsKey(199)) {
-                            $attrs[199].raw.value
+                            Get-SmartRawNumber $attrs[199]
                         }
                         else {
                             $null
