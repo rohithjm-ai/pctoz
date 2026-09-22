@@ -775,3 +775,4 @@ $response = & curl.exe `
 Write-Host ""
 Write-Host "Server response:"
 Write-Host $response
+$response | Out-File -FilePath (Join-Path $PSScriptRoot "collector_response.txt") -Encoding utf8

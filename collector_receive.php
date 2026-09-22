@@ -1,5 +1,9 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require 'config.php';
 
 header('Content-Type: application/json; charset=utf-8');
@@ -297,6 +301,7 @@ try {
         INSERT INTO session_disks
         (
             session_id,
+            disk_index,
             model,
             media_type,
             bus_type,
@@ -312,7 +317,7 @@ try {
             write_errors_total,
             write_errors_corrected,
             write_errors_uncorrected,
-            reliability_status
+            reliability_status,
             serial_number,
             smart_available,
             smart_passed,
@@ -320,10 +325,11 @@ try {
             smart_pending_sectors,
             smart_offline_uncorrectable,
             smart_lifetime_remaining_pct,
-smart_lifetime_used_pct
-        )
-        VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            smart_lifetime_used_pct)
+        VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+)
     ");
 
         foreach ($data['physical_disks'] as $disk) {
@@ -342,6 +348,46 @@ smart_lifetime_used_pct
                 )
                 ? 1
                 : 0;
+            $diskValues = [
+                $sessionId,
+                $disk['disk_index'] ?? null,
+                $disk['model'] ?? null,
+                $disk['media_type'] ?? null,
+                $disk['bus_type'] ?? null,
+                $disk['capacity_gb'] ?? null,
+                $disk['health_status'] ?? null,
+                $isSystemDisk,
+
+                $disk['temperature_c'] ?? null,
+                $disk['power_on_hours'] ?? null,
+                $disk['wear'] ?? null,
+
+                $disk['read_errors_total'] ?? null,
+                $disk['read_errors_corrected'] ?? null,
+                $disk['read_errors_uncorrected'] ?? null,
+
+                $disk['write_errors_total'] ?? null,
+                $disk['write_errors_corrected'] ?? null,
+                $disk['write_errors_uncorrected'] ?? null,
+
+                $disk['reliability_status'] ?? null,
+
+                $disk['serial_number'] ?? null,
+                !empty($disk['smart_available']) ? 1 : 0,
+
+                array_key_exists('smart_passed', $disk) && $disk['smart_passed'] !== null
+                    ? ($disk['smart_passed'] ? 1 : 0)
+                    : null,
+
+                $disk['smart_reallocated_sectors'] ?? null,
+                $disk['smart_pending_sectors'] ?? null,
+                $disk['smart_offline_uncorrectable'] ?? null,
+                $disk['smart_lifetime_remaining_pct'] ?? null,
+                $disk['smart_lifetime_used_pct'] ?? null
+            ];
+
+            echo "DISK VALUE COUNT = " . count($diskValues);
+            exit;
 
             $stmtDisk->execute([
                 $sessionId,
