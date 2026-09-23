@@ -318,7 +318,7 @@ Write-Host "This snapshot does not itself prove the cause of slowness."
 Write-Host "Technician should compare measurements while the problem is occurring."
 Write-Host ""
 
-#Stop-Transcript | Out-Null
+
 
 Write-Host ""
 Write-Host "Report saved to:"
@@ -794,3 +794,4 @@ Write-Host ""
 Write-Host "Server response:"
 Write-Host $response
 $response | Out-File -FilePath (Join-Path $PSScriptRoot "collector_response.txt") -Encoding utf8
+Stop-Transcript | Out-Null
