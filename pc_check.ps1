@@ -325,9 +325,18 @@ Write-Host "Report saved to:"
 Write-Host $ReportFile
 Write-Host ""
 
+$jsonPath = Join-Path $PSScriptRoot "pc_check_result.json"
+$tempJsonPath = Join-Path $PSScriptRoot "pc_check_result.tmp"
+
+Write-Host "DEBUG 6 - starting JSON creation"
 try {
+    if (Test-Path $jsonPath) {
+        Remove-Item $jsonPath -Force
+    }
+
 
     $jsonPath = Join-Path $PSScriptRoot "pc_check_result.json"
+
     $ramModuleJson = @()
 
     foreach ($m in $ramModules) {
@@ -435,6 +444,7 @@ try {
 
         return $null
     }
+    Write-Host "DEBUG 1 - starting SMART collection"
 
     if ($smartctlPath) {
 
@@ -607,7 +617,10 @@ try {
             # smartctl exists, but scanning failed
         }
     }
-        # ------------------------------------------------------------
+    Write-Host "DEBUG 2 - SMART collection finished"
+    Write-Host "SMART SUMMARY COUNT:" $smartDiskSummary.Count
+    Write-Host "DEBUG 3 - starting SMART merge"
+    # ------------------------------------------------------------
     # MERGE SMART SUMMARY INTO PHYSICAL DISKS BY SERIAL NUMBER
     # ------------------------------------------------------------
 
@@ -662,7 +675,11 @@ try {
             $d['smart_lifetime_used_pct'] = $null
         }
     }
+    Write-Host "DEBUG 4 - SMART merge finished"
+    Write-Host "DEBUG 5 - creating result"
+
     $result = [ordered]@{
+        session_id               = $SessionId
         collector_status         = "success"
 
         manufacturer             = [string]$computer.Manufacturer
@@ -742,21 +759,29 @@ try {
 
     $jsonText = $result | ConvertTo-Json -Depth 10
 
-    [System.IO.File]::WriteAllText(
-        $jsonPath,
-        $jsonText,
-        [System.Text.UTF8Encoding]::new($false)
-    )
+    $jsonText | Out-File `
+        -FilePath $tempJsonPath `
+        -Encoding utf8 `
+        -Force
 
+    Move-Item `
+        -Path $tempJsonPath `
+        -Destination $jsonPath `
+        -Force
+
+    Write-Host ""
     Write-Host "JSON CREATED:"
     Write-Host $jsonPath
-    Write-Host "Exists:" (Test-Path $jsonPath)
 }
 catch {
 
     Write-Host ""
     Write-Host "JSON CREATION ERROR:"
     Write-Host $_.Exception.Message
+    throw
+}
+if (-not (Test-Path $jsonPath)) {
+    throw "Current PCTOZ JSON result was not created. Upload cancelled."
 }
 Write-Host ""
 Write-Host "Uploading PCTOZ result..."
