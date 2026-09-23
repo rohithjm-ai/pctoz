@@ -1,1 +1,1 @@
-﻿{"ok":true,"session_id":238,"collector_status":"RECEIVED","next_node":"ROOT-S015"}
+﻿{"ok":true,"session_id":248,"collector_status":"RECEIVED","next_node":"ROOT-S015"}

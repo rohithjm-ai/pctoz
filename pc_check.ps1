@@ -394,61 +394,6 @@ try {
 
         $physicalDiskJson += $diskItem
     }
-    # ------------------------------------------------------------
-    # MERGE SMART SUMMARY INTO PHYSICAL DISKS BY SERIAL NUMBER
-    # ------------------------------------------------------------
-
-    $smartBySerial = @{}
-
-    foreach ($s in $smartDiskSummary) {
-
-        $serial = ([string]$s.serial).Trim()
-
-        if (-not [string]::IsNullOrWhiteSpace($serial)) {
-            $smartBySerial[$serial] = $s
-        }
-    }
-
-    foreach ($d in $physicalDiskJson) {
-
-        $serial = ([string]$d.serial_number).Trim()
-
-        if (
-            -not [string]::IsNullOrWhiteSpace($serial) -and
-            $smartBySerial.ContainsKey($serial)
-        ) {
-
-            $s = $smartBySerial[$serial]
-
-            $d['smart_available'] = $true
-            $d['smart_passed'] = $s.smart_passed
-
-            $d['smart_reallocated_sectors'] =
-            $s.reallocated_sectors
-
-            $d['smart_pending_sectors'] =
-            $s.pending_sectors
-
-            $d['smart_offline_uncorrectable'] =
-            $s.offline_uncorrectable
-
-            $d['smart_lifetime_remaining_pct'] =
-            $s.lifetime_remaining_pct
-
-            $d['smart_lifetime_used_pct'] =
-            $s.lifetime_used_pct
-        }
-        else {
-
-            $d['smart_available'] = $false
-            $d['smart_passed'] = $null
-            $d['smart_reallocated_sectors'] = $null
-            $d['smart_pending_sectors'] = $null
-            $d['smart_offline_uncorrectable'] = $null
-            $d['smart_lifetime_remaining_pct'] = $null
-            $d['smart_lifetime_used_pct'] = $null
-        }
-    }
 
     # ------------------------------------------------------------
     # OPTIONAL SMART / NVME DATA COLLECTION
@@ -662,7 +607,61 @@ try {
             # smartctl exists, but scanning failed
         }
     }
+        # ------------------------------------------------------------
+    # MERGE SMART SUMMARY INTO PHYSICAL DISKS BY SERIAL NUMBER
+    # ------------------------------------------------------------
 
+    $smartBySerial = @{}
+
+    foreach ($s in $smartDiskSummary) {
+
+        $serial = ([string]$s.serial).Trim()
+
+        if (-not [string]::IsNullOrWhiteSpace($serial)) {
+            $smartBySerial[$serial] = $s
+        }
+    }
+
+    foreach ($d in $physicalDiskJson) {
+
+        $serial = ([string]$d.serial_number).Trim()
+
+        if (
+            -not [string]::IsNullOrWhiteSpace($serial) -and
+            $smartBySerial.ContainsKey($serial)
+        ) {
+
+            $s = $smartBySerial[$serial]
+
+            $d['smart_available'] = $true
+            $d['smart_passed'] = $s.smart_passed
+
+            $d['smart_reallocated_sectors'] =
+            $s.reallocated_sectors
+
+            $d['smart_pending_sectors'] =
+            $s.pending_sectors
+
+            $d['smart_offline_uncorrectable'] =
+            $s.offline_uncorrectable
+
+            $d['smart_lifetime_remaining_pct'] =
+            $s.lifetime_remaining_pct
+
+            $d['smart_lifetime_used_pct'] =
+            $s.lifetime_used_pct
+        }
+        else {
+
+            $d['smart_available'] = $false
+            $d['smart_passed'] = $null
+            $d['smart_reallocated_sectors'] = $null
+            $d['smart_pending_sectors'] = $null
+            $d['smart_offline_uncorrectable'] = $null
+            $d['smart_lifetime_remaining_pct'] = $null
+            $d['smart_lifetime_used_pct'] = $null
+        }
+    }
     $result = [ordered]@{
         collector_status         = "success"
 
