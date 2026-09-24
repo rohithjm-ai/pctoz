@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory = $true)]
     [int]$SessionId,
 
@@ -591,6 +591,46 @@ try {
                         else {
                             $null
                         }
+
+                        nvme_critical_warning =
+                        if ($null -ne $smartObject.nvme_smart_health_information_log.critical_warning) {
+                            $smartObject.nvme_smart_health_information_log.critical_warning
+                        }
+                        else {
+                            $null
+                        }
+
+                        nvme_percentage_used =
+                        if ($null -ne $smartObject.nvme_smart_health_information_log.percentage_used) {
+                            $smartObject.nvme_smart_health_information_log.percentage_used
+                        }
+                        else {
+                            $null
+                        }
+
+                        nvme_available_spare_pct =
+                        if ($null -ne $smartObject.nvme_smart_health_information_log.available_spare) {
+                            $smartObject.nvme_smart_health_information_log.available_spare
+                        }
+                        else {
+                            $null
+                        }
+
+                        nvme_available_spare_threshold_pct =
+                        if ($null -ne $smartObject.nvme_smart_health_information_log.available_spare_threshold) {
+                            $smartObject.nvme_smart_health_information_log.available_spare_threshold
+                        }
+                        else {
+                            $null
+                        }
+
+                        nvme_media_errors =
+                        if ($null -ne $smartObject.nvme_smart_health_information_log.media_errors) {
+                            $smartObject.nvme_smart_health_information_log.media_errors
+                        }
+                        else {
+                            $null
+                        }
                     }
  
 
@@ -634,31 +674,60 @@ try {
     foreach ($d in $physicalDiskJson) {
 
         $serial = ([string]$d.serial_number).Trim()
+        $s = $null
 
+        # Preferred match: exact serial number.
         if (
             -not [string]::IsNullOrWhiteSpace($serial) -and
             $smartBySerial.ContainsKey($serial)
         ) {
-
             $s = $smartBySerial[$serial]
+        }
+
+        # Safe fallback for NVMe when Windows and smartctl expose different
+        # serial-number formats.  Use model + NVMe protocol only when the
+        # match is unique.
+        if ($null -eq $s -and ([string]$d.bus_type).Trim().ToUpperInvariant() -eq 'NVME') {
+
+            $diskModel = ([string]$d.model).Trim()
+
+            $nvmeMatches = @(
+                $smartDiskSummary | Where-Object {
+                    ([string]$_.protocol).Trim().ToUpperInvariant() -eq 'NVME' -and
+                    ([string]$_.model).Trim() -eq $diskModel
+                }
+            )
+
+            if ($nvmeMatches.Count -eq 1) {
+                $s = $nvmeMatches[0]
+            }
+        }
+
+        if ($null -ne $s) {
 
             $d['smart_available'] = $true
             $d['smart_passed'] = $s.smart_passed
 
-            $d['smart_reallocated_sectors'] =
-            $s.reallocated_sectors
+            $d['smart_reallocated_sectors'] = $s.reallocated_sectors
+            $d['smart_pending_sectors'] = $s.pending_sectors
+            $d['smart_offline_uncorrectable'] = $s.offline_uncorrectable
+            $d['smart_lifetime_remaining_pct'] = $s.lifetime_remaining_pct
+            $d['smart_lifetime_used_pct'] = $s.lifetime_used_pct
 
-            $d['smart_pending_sectors'] =
-            $s.pending_sectors
+            # Prefer SMART values when Windows reliability counters are
+            # unavailable, which is common for NVMe on some systems.
+            if ($null -eq $d['temperature_c'] -and $null -ne $s.temperature_c) {
+                $d['temperature_c'] = $s.temperature_c
+            }
+            if ($null -eq $d['power_on_hours'] -and $null -ne $s.power_on_hours) {
+                $d['power_on_hours'] = $s.power_on_hours
+            }
 
-            $d['smart_offline_uncorrectable'] =
-            $s.offline_uncorrectable
-
-            $d['smart_lifetime_remaining_pct'] =
-            $s.lifetime_remaining_pct
-
-            $d['smart_lifetime_used_pct'] =
-            $s.lifetime_used_pct
+            $d['nvme_critical_warning'] = $s.nvme_critical_warning
+            $d['nvme_percentage_used'] = $s.nvme_percentage_used
+            $d['nvme_available_spare_pct'] = $s.nvme_available_spare_pct
+            $d['nvme_available_spare_threshold_pct'] = $s.nvme_available_spare_threshold_pct
+            $d['nvme_media_errors'] = $s.nvme_media_errors
         }
         else {
 
@@ -669,6 +738,11 @@ try {
             $d['smart_offline_uncorrectable'] = $null
             $d['smart_lifetime_remaining_pct'] = $null
             $d['smart_lifetime_used_pct'] = $null
+            $d['nvme_critical_warning'] = $null
+            $d['nvme_percentage_used'] = $null
+            $d['nvme_available_spare_pct'] = $null
+            $d['nvme_available_spare_threshold_pct'] = $null
+            $d['nvme_media_errors'] = $null
         }
     }
 
