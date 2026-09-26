@@ -298,39 +298,48 @@ try {
     ) {
 
         $stmtDisk = $pdo->prepare("
-        INSERT INTO session_disks
-        (
-            session_id,
-            disk_index,
-            model,
-            media_type,
-            bus_type,
-            capacity_gb,
-            health_status,
-            is_system_disk,
-            temperature_c,
-            power_on_hours,
-            wear,
-            read_errors_total,
-            read_errors_corrected,
-            read_errors_uncorrected,
-            write_errors_total,
-            write_errors_corrected,
-            write_errors_uncorrected,
-            reliability_status,
-            serial_number,
-            smart_available,
-            smart_passed,
-            smart_reallocated_sectors,
-            smart_pending_sectors,
-            smart_offline_uncorrectable,
-            smart_lifetime_remaining_pct,
-            smart_lifetime_used_pct)
-        VALUES (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-)
-    ");
+    INSERT INTO session_disks
+    (
+        session_id,
+        disk_index,
+        model,
+        media_type,
+        bus_type,
+        capacity_gb,
+        health_status,
+        is_system_disk,
+        temperature_c,
+        power_on_hours,
+        wear,
+        read_errors_total,
+        read_errors_corrected,
+        read_errors_uncorrected,
+        write_errors_total,
+        write_errors_corrected,
+        write_errors_uncorrected,
+        reliability_status,
+        serial_number,
+        smart_available,
+        smart_passed,
+        smart_reallocated_sectors,
+        smart_pending_sectors,
+        smart_offline_uncorrectable,
+        smart_lifetime_remaining_pct,
+        smart_lifetime_used_pct,
+        nvme_critical_warning,
+        nvme_percentage_used,
+        nvme_available_spare_pct,
+        nvme_available_spare_threshold_pct,
+        nvme_media_errors
+    )
+    VALUES
+    (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    )
+");
+
 
         foreach ($data['physical_disks'] as $disk) {
 
@@ -383,12 +392,18 @@ try {
                 $disk['smart_pending_sectors'] ?? null,
                 $disk['smart_offline_uncorrectable'] ?? null,
                 $disk['smart_lifetime_remaining_pct'] ?? null,
-                $disk['smart_lifetime_used_pct'] ?? null
+                $disk['smart_lifetime_used_pct'] ?? null,
+
+                $disk['nvme_critical_warning'] ?? null,
+                $disk['nvme_percentage_used'] ?? null,
+                $disk['nvme_available_spare_pct'] ?? null,
+                $disk['nvme_available_spare_threshold_pct'] ?? null,
+                $disk['nvme_media_errors'] ?? null
             ];
 
 
 
-    $stmtDisk->execute($diskValues);
+            $stmtDisk->execute($diskValues);
         }
     }
     /*
