@@ -631,12 +631,28 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 continue;
             }
 
+            $expected = $rule['compare_value'];
+
+            if (!empty($rule['compare_field_code'])) {
+
+                $compareFieldCode = $rule['compare_field_code'];
+
+                if (!array_key_exists($compareFieldCode, $disk)) {
+                    continue;
+                }
+
+                $expected = $disk[$compareFieldCode];
+
+                if ($expected === null) {
+                    continue;
+                }
+            }
+
             $matched = compareFindingValue(
                 $actual,
                 $rule['operator'],
-                $rule['compare_value']
+                $expected
             );
-
             if (!$matched) {
                 continue;
             }
@@ -691,7 +707,10 @@ function generateSessionFindings(PDO $pdo, int $sessionId): void
                 fmtNumber($disk['temperature_c'] ?? 0),
 
                 '{power_on_hours}' =>
-                fmtNumber($disk['power_on_hours'] ?? 0)
+                fmtNumber($disk['power_on_hours'] ?? 0),
+
+                '{nvme_percentage_used}' =>
+                fmtNumber($disk['nvme_percentage_used'] ?? 0)
             ];
 
             $renderedTitle = strtr(
@@ -2152,6 +2171,7 @@ $previousSuggestions = $stmt->fetchAll();
                                     <?php foreach ($sessionDisks as $disk): ?>
                                         <?php
                                         $diskCondition = 'No warning detected';
+                                        $diskConditionRank = 0;
 
                                         foreach ($sessionFindings as $sf) {
 
@@ -2165,11 +2185,22 @@ $previousSuggestions = $stmt->fetchAll();
                                                 $severity = strtoupper($sf['severity'] ?? '');
 
                                                 if ($severity === 'CRITICAL') {
-                                                    $diskCondition = 'Urgent';
+                                                    $newRank = 4;
+                                                    $newCondition = 'Urgent';
                                                 } elseif (in_array($severity, ['ATTENTION', 'IMPORTANT', 'WARNING'])) {
-                                                    $diskCondition = 'Needs attention';
+                                                    $newRank = 3;
+                                                    $newCondition = 'Needs attention';
                                                 } elseif ($severity === 'ADVISORY') {
-                                                    $diskCondition = 'Monitor';
+                                                    $newRank = 2;
+                                                    $newCondition = 'Monitor';
+                                                } else {
+                                                    $newRank = 0;
+                                                    $newCondition = 'No warning detected';
+                                                }
+
+                                                if ($newRank > $diskConditionRank) {
+                                                    $diskConditionRank = $newRank;
+                                                    $diskCondition = $newCondition;
                                                 }
                                             }
                                         } ?>

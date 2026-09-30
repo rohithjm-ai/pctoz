@@ -854,7 +854,7 @@ if (-not (Test-Path $jsonPath)) {
 Write-Host ""
 Write-Host "Uploading PCTOZ result..."
 
-$UploadUrl = "http://192.168.0.103/pctoz/collector_receive.php"
+$UploadUrl = "http://192.168.0.104/pctoz/collector_receive.php"
 $JsonFile = Join-Path $PSScriptRoot "pc_check_result.json"
 
 $response = & curl.exe `
