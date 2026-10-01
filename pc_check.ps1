@@ -506,13 +506,13 @@ try {
                     }
                     $smartDiskSummary += [PSCustomObject]@{
 
-                        device_path            = $devicePath
-                        model                  = $model
-                        serial                 = $serial
+                        device_path                        = $devicePath
+                        model                              = $model
+                        serial                             = $serial
 
-                        protocol               = [string]$smartObject.device.protocol
+                        protocol                           = [string]$smartObject.device.protocol
 
-                        smart_passed           =
+                        smart_passed                       =
                         if ($null -ne $smartObject.smart_status.passed) {
                             [bool]$smartObject.smart_status.passed
                         }
@@ -520,7 +520,7 @@ try {
                             $null
                         }
 
-                        temperature_c          =
+                        temperature_c                      =
                         if ($null -ne $smartObject.temperature.current) {
                             $smartObject.temperature.current
                         }
@@ -528,7 +528,7 @@ try {
                             $null
                         }
 
-                        power_on_hours         =
+                        power_on_hours                     =
                         if ($null -ne $smartObject.power_on_time.hours) {
                             $smartObject.power_on_time.hours
                         }
@@ -536,7 +536,7 @@ try {
                             $null
                         }
 
-                        reallocated_sectors    =
+                        reallocated_sectors                =
                         if ($attrs.ContainsKey(5)) {
                             Get-SmartRawNumber $attrs[5]
                         }
@@ -544,7 +544,7 @@ try {
                             $null
                         }
 
-                        pending_sectors        =
+                        pending_sectors                    =
                         if ($attrs.ContainsKey(197)) {
                             Get-SmartRawNumber $attrs[197]
                         }
@@ -552,7 +552,7 @@ try {
                             $null
                         }
 
-                        offline_uncorrectable  =
+                        offline_uncorrectable              =
                         if ($attrs.ContainsKey(198)) {
                             Get-SmartRawNumber $attrs[198]
                         }
@@ -560,7 +560,7 @@ try {
                             $null
                         }
 
-                        reported_uncorrectable =
+                        reported_uncorrectable             =
                         if ($attrs.ContainsKey(187)) {
                             Get-SmartRawNumber $attrs[187]
                         }
@@ -568,7 +568,7 @@ try {
                             $null
                         }
 
-                        udma_crc_errors        =
+                        udma_crc_errors                    =
                         if ($attrs.ContainsKey(199)) {
                             Get-SmartRawNumber $attrs[199]
                         }
@@ -576,7 +576,7 @@ try {
                             $null
                         }
 
-                        lifetime_remaining_pct =
+                        lifetime_remaining_pct             =
                         if ($attrs.ContainsKey(202)) {
                             $attrs[202].value
                         }
@@ -584,7 +584,7 @@ try {
                             $null
                         }
 
-                        lifetime_used_pct      =
+                        lifetime_used_pct                  =
                         if ($attrs.ContainsKey(202)) {
                             $attrs[202].raw.value
                         }
@@ -592,7 +592,7 @@ try {
                             $null
                         }
 
-                        nvme_critical_warning =
+                        nvme_critical_warning              =
                         if ($null -ne $smartObject.nvme_smart_health_information_log.critical_warning) {
                             $smartObject.nvme_smart_health_information_log.critical_warning
                         }
@@ -600,7 +600,7 @@ try {
                             $null
                         }
 
-                        nvme_percentage_used =
+                        nvme_percentage_used               =
                         if ($null -ne $smartObject.nvme_smart_health_information_log.percentage_used) {
                             $smartObject.nvme_smart_health_information_log.percentage_used
                         }
@@ -608,7 +608,7 @@ try {
                             $null
                         }
 
-                        nvme_available_spare_pct =
+                        nvme_available_spare_pct           =
                         if ($null -ne $smartObject.nvme_smart_health_information_log.available_spare) {
                             $smartObject.nvme_smart_health_information_log.available_spare
                         }
@@ -624,7 +624,7 @@ try {
                             $null
                         }
 
-                        nvme_media_errors =
+                        nvme_media_errors                  =
                         if ($null -ne $smartObject.nvme_smart_health_information_log.media_errors) {
                             $smartObject.nvme_smart_health_information_log.media_errors
                         }

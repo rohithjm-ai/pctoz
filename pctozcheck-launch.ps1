@@ -28,6 +28,11 @@ try {
 
     $SessionId = $pairs['session']
     $CollectorToken = $pairs['token']
+    $Tool = $pairs['tool']
+
+    if (-not $Tool) {
+        $Tool = 'PC_CHECK'
+    }
 
     if (-not $SessionId) {
         throw "Session ID is missing."
@@ -41,16 +46,66 @@ try {
     Write-Host $SessionId
 
     Write-Host ""
-    Write-Host "Starting PCTOZ PC Check..."
+    Write-Host "Tool:"
+    Write-Host $Tool
     Write-Host ""
 
-    $PcCheckPath =
-    Join-Path $PSScriptRoot "pc_check.ps1"
+    switch ($Tool.ToUpper()) {
+
+        'PC_CHECK' {
+            $ScriptPath =
+            Join-Path $PSScriptRoot "pc_check.ps1"
+        }
+
+        'PERF_SAMPLE' {
+            $ScriptPath =
+            Join-Path $PSScriptRoot "perf_sample.ps1"
+        }
+
+        default {
+            throw "Unknown PCTOZCheck tool: $Tool"
+        }
+    }
+
+    if (-not (Test-Path $ScriptPath)) {
+        throw "PCTOZCheck tool file not found: $ScriptPath"
+    }
+
+    Write-Host "Starting PCTOZCheck tool..."
+    Write-Host ""
+    Write-Host ""
+    Write-Host "Tool:"
+    Write-Host $Tool
+    Write-Host ""
+
+    switch ($Tool.ToUpper()) {
+
+        'PC_CHECK' {
+            $ScriptPath =
+            Join-Path $PSScriptRoot "pc_check.ps1"
+        }
+
+        'PERF_SAMPLE' {
+            $ScriptPath =
+            Join-Path $PSScriptRoot "perf_sample.ps1"
+        }
+
+        default {
+            throw "Unknown PCTOZCheck tool: $Tool"
+        }
+    }
+
+    if (-not (Test-Path $ScriptPath)) {
+        throw "PCTOZCheck tool file not found: $ScriptPath"
+    }
+
+    Write-Host "Starting PCTOZCheck tool..."
+    Write-Host ""
 
     $arguments = @(
         '-NoProfile'
         '-ExecutionPolicy', 'Bypass'
-        '-File', "`"$PcCheckPath`""
+        '-File', "`"$ScriptPath`""
         '-SessionId', $SessionId
         '-CollectorToken', "`"$CollectorToken`""
     )

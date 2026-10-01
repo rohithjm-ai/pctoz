@@ -1,0 +1,21 @@
+﻿{
+    "session_id":  9999,
+    "tool":  "PERF_SAMPLE",
+    "status":  "success",
+    "sample_interval_seconds":  2,
+    "sample_count":  30,
+    "cpu_avg_pct":  32.71,
+    "cpu_max_pct":  53.22,
+    "memory_committed_avg_pct":  78.4,
+    "memory_committed_max_pct":  79.45,
+    "memory_available_min_mb":  5611,
+    "pages_sec_avg":  21.17,
+    "pages_sec_max":  358.05,
+    "disk_active_avg_pct":  12.81,
+    "disk_active_max_pct":  82.26,
+    "disk_queue_avg":  0.13,
+    "disk_queue_max":  0.82,
+    "disk_latency_avg_ms":  8.42,
+    "disk_latency_max_ms":  47.42,
+    "disk_bytes_sec_avg":  552521.06
+}
