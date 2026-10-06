@@ -3,334 +3,678 @@
     "tool":  "PERF_SAMPLE",
     "status":  "success",
     "sample_interval_seconds":  2,
-    "sample_count":  30,
+    "sample_count":  29,
     "expected_sample_count":  30,
-    "sample_quality_pct":  100,
+    "sample_quality_pct":  96.7,
     "logical_processors":  8,
-    "cpu_avg_pct":  25.65,
-    "cpu_max_pct":  49.06,
-    "memory_committed_avg_pct":  73.92,
-    "memory_committed_max_pct":  74.66,
-    "memory_available_min_mb":  6539,
-    "pages_sec_avg":  29.78,
-    "pages_sec_max":  299.48,
-    "pages_input_sec_avg":  29.78,
-    "pages_input_sec_max":  299.48,
-    "page_reads_sec_avg":  4.33,
-    "page_reads_sec_max":  55.53,
-    "disk_active_avg_pct":  9.92,
-    "disk_active_max_pct":  34.64,
-    "disk_queue_avg":  0.2,
-    "disk_queue_max":  0.69,
-    "disk_latency_avg_ms":  24.13,
-    "disk_latency_max_ms":  71.51,
-    "disk_bytes_sec_avg":  210359.54,
+    "cpu_avg_pct":  27.26,
+    "cpu_max_pct":  48.83,
+    "memory_committed_avg_pct":  75.98,
+    "memory_committed_max_pct":  76.39,
+    "memory_available_min_mb":  6826,
+    "pages_sec_avg":  20.61,
+    "pages_sec_max":  372.88,
+    "pages_input_sec_avg":  20.61,
+    "pages_input_sec_max":  372.88,
+    "page_reads_sec_avg":  2.83,
+    "page_reads_sec_max":  51.43,
+    "disk_active_avg_pct":  12.45,
+    "disk_active_max_pct":  54.88,
+    "disk_queue_avg":  0.12,
+    "disk_queue_max":  0.55,
+    "disk_latency_avg_ms":  21.65,
+    "disk_latency_max_ms":  96.48,
+    "disk_bytes_sec_avg":  160855.69,
     "top_memory_processes":  [
                                  {
-                                     "process_id":  16708,
+                                     "process_id":  20916,
                                      "process_name":  "chrome",
-                                     "start_private_mb":  636.73,
-                                     "end_private_mb":  635.47,
-                                     "growth_mb":  -1.26,
-                                     "end_working_set_mb":  592.07
-                                 },
-                                 {
-                                     "process_id":  15940,
-                                     "process_name":  "Code",
-                                     "start_private_mb":  424.28,
-                                     "end_private_mb":  343.59,
-                                     "growth_mb":  -80.69,
-                                     "end_working_set_mb":  295.37
+                                     "start_private_mb":  553.59,
+                                     "end_private_mb":  549.87,
+                                     "growth_mb":  -3.72,
+                                     "end_working_set_mb":  534.7
                                  },
                                  {
                                      "process_id":  21852,
                                      "process_name":  "bds",
-                                     "start_private_mb":  341.93,
-                                     "end_private_mb":  342.01,
-                                     "growth_mb":  0.08,
-                                     "end_working_set_mb":  87.28
+                                     "start_private_mb":  387.23,
+                                     "end_private_mb":  387.14,
+                                     "growth_mb":  -0.09,
+                                     "end_working_set_mb":  78.73
+                                 },
+                                 {
+                                     "process_id":  15940,
+                                     "process_name":  "Code",
+                                     "start_private_mb":  323.77,
+                                     "end_private_mb":  323.59,
+                                     "growth_mb":  -0.18,
+                                     "end_working_set_mb":  170.36
                                  },
                                  {
                                      "process_id":  5076,
                                      "process_name":  "MsMpEng",
-                                     "start_private_mb":  316.33,
-                                     "end_private_mb":  316.54,
-                                     "growth_mb":  0.21,
-                                     "end_working_set_mb":  111.89
+                                     "start_private_mb":  322.08,
+                                     "end_private_mb":  321.83,
+                                     "growth_mb":  -0.25,
+                                     "end_working_set_mb":  137.16
                                  },
                                  {
                                      "process_id":  2492,
                                      "process_name":  "Code",
-                                     "start_private_mb":  365.61,
-                                     "end_private_mb":  290.52,
-                                     "growth_mb":  -75.09,
-                                     "end_working_set_mb":  289.71
-                                 },
-                                 {
-                                     "process_id":  24584,
-                                     "process_name":  "chrome",
-                                     "start_private_mb":  282.66,
-                                     "end_private_mb":  282.66,
-                                     "growth_mb":  0,
-                                     "end_working_set_mb":  200.89
-                                 },
-                                 {
-                                     "process_id":  29948,
-                                     "process_name":  "chrome",
-                                     "start_private_mb":  281.82,
-                                     "end_private_mb":  282.28,
-                                     "growth_mb":  0.46,
-                                     "end_working_set_mb":  310.08
+                                     "start_private_mb":  316.51,
+                                     "end_private_mb":  299.28,
+                                     "growth_mb":  -17.23,
+                                     "end_working_set_mb":  278.32
                                  },
                                  {
                                      "process_id":  15408,
                                      "process_name":  "explorer",
-                                     "start_private_mb":  277.45,
-                                     "end_private_mb":  279.81,
-                                     "growth_mb":  2.36,
-                                     "end_working_set_mb":  384.33
+                                     "start_private_mb":  291.11,
+                                     "end_private_mb":  289.77,
+                                     "growth_mb":  -1.34,
+                                     "end_working_set_mb":  402.61
                                  },
                                  {
-                                     "process_id":  10888,
+                                     "process_id":  29948,
                                      "process_name":  "chrome",
-                                     "start_private_mb":  267.96,
-                                     "end_private_mb":  253.86,
-                                     "growth_mb":  -14.1,
-                                     "end_working_set_mb":  230.8
+                                     "start_private_mb":  285.67,
+                                     "end_private_mb":  285.67,
+                                     "growth_mb":  0,
+                                     "end_working_set_mb":  262.3
+                                 },
+                                 {
+                                     "process_id":  24584,
+                                     "process_name":  "chrome",
+                                     "start_private_mb":  282.7,
+                                     "end_private_mb":  282.7,
+                                     "growth_mb":  0,
+                                     "end_working_set_mb":  197.84
                                  },
                                  {
                                      "process_id":  18212,
                                      "process_name":  "chrome",
-                                     "start_private_mb":  265.72,
-                                     "end_private_mb":  250.24,
-                                     "growth_mb":  -15.48,
-                                     "end_working_set_mb":  263.71
+                                     "start_private_mb":  249.96,
+                                     "end_private_mb":  249.21,
+                                     "growth_mb":  -0.75,
+                                     "end_working_set_mb":  253.89
+                                 },
+                                 {
+                                     "process_id":  19960,
+                                     "process_name":  "chrome",
+                                     "start_private_mb":  239.88,
+                                     "end_private_mb":  240.13,
+                                     "growth_mb":  0.25,
+                                     "end_working_set_mb":  243.91
                                  }
                              ],
     "top_memory_growth":  [
                               {
                                   "process_id":  23836,
                                   "process_name":  "EXCEL",
-                                  "start_private_mb":  63.25,
-                                  "end_private_mb":  100.61,
-                                  "growth_mb":  37.36,
-                                  "end_working_set_mb":  172.4
+                                  "start_private_mb":  63.3,
+                                  "end_private_mb":  113.55,
+                                  "growth_mb":  50.25,
+                                  "end_working_set_mb":  186.64
                               },
                               {
-                                  "process_id":  15408,
-                                  "process_name":  "explorer",
-                                  "start_private_mb":  277.45,
-                                  "end_private_mb":  279.81,
-                                  "growth_mb":  2.36,
-                                  "end_working_set_mb":  384.33
-                              },
-                              {
-                                  "process_id":  6800,
-                                  "process_name":  "net_updater64",
-                                  "start_private_mb":  222.89,
-                                  "end_private_mb":  223.5,
-                                  "growth_mb":  0.61,
-                                  "end_working_set_mb":  208.72
+                                  "process_id":  25392,
+                                  "process_name":  "powershell",
+                                  "start_private_mb":  64.94,
+                                  "end_private_mb":  75.15,
+                                  "growth_mb":  10.21,
+                                  "end_working_set_mb":  92.33
                               },
                               {
                                   "process_id":  6460,
                                   "process_name":  "SearchIndexer",
-                                  "start_private_mb":  37.27,
-                                  "end_private_mb":  37.82,
-                                  "growth_mb":  0.55,
-                                  "end_working_set_mb":  45.09
+                                  "start_private_mb":  35.75,
+                                  "end_private_mb":  38.64,
+                                  "growth_mb":  2.89,
+                                  "end_working_set_mb":  41.88
                               },
                               {
-                                  "process_id":  29948,
+                                  "process_id":  10736,
                                   "process_name":  "chrome",
-                                  "start_private_mb":  281.82,
-                                  "end_private_mb":  282.28,
-                                  "growth_mb":  0.46,
-                                  "end_working_set_mb":  310.08
-                              },
-                              {
-                                  "process_id":  16388,
-                                  "process_name":  "chrome",
-                                  "start_private_mb":  43.11,
-                                  "end_private_mb":  43.49,
-                                  "growth_mb":  0.38,
-                                  "end_working_set_mb":  60.95
-                              },
-                              {
-                                  "process_id":  5092,
-                                  "process_name":  "LMS",
-                                  "start_private_mb":  7.77,
-                                  "end_private_mb":  8.09,
-                                  "growth_mb":  0.32,
-                                  "end_working_set_mb":  23.88
+                                  "start_private_mb":  42.83,
+                                  "end_private_mb":  44.39,
+                                  "growth_mb":  1.56,
+                                  "end_working_set_mb":  62.61
                               },
                               {
                                   "process_id":  19356,
                                   "process_name":  "Code",
-                                  "start_private_mb":  97.02,
-                                  "end_private_mb":  97.28,
-                                  "growth_mb":  0.26,
-                                  "end_working_set_mb":  134.97
+                                  "start_private_mb":  96.73,
+                                  "end_private_mb":  97.84,
+                                  "growth_mb":  1.11,
+                                  "end_working_set_mb":  132.58
                               },
                               {
-                                  "process_id":  12048,
-                                  "process_name":  "Wispr Flow",
-                                  "start_private_mb":  26.84,
-                                  "end_private_mb":  27.09,
-                                  "growth_mb":  0.25,
-                                  "end_working_set_mb":  100.05
+                                  "process_id":  7200,
+                                  "process_name":  "chrome",
+                                  "start_private_mb":  46.5,
+                                  "end_private_mb":  47.25,
+                                  "growth_mb":  0.75,
+                                  "end_working_set_mb":  71.71
                               },
                               {
                                   "process_id":  35808,
                                   "process_name":  "KuroWindows",
-                                  "start_private_mb":  37.44,
-                                  "end_private_mb":  37.68,
-                                  "growth_mb":  0.24,
-                                  "end_working_set_mb":  113.18
+                                  "start_private_mb":  42.66,
+                                  "end_private_mb":  43.3,
+                                  "growth_mb":  0.64,
+                                  "end_working_set_mb":  114.83
+                              },
+                              {
+                                  "process_id":  2988,
+                                  "process_name":  "svchost",
+                                  "start_private_mb":  16.11,
+                                  "end_private_mb":  16.75,
+                                  "growth_mb":  0.64,
+                                  "end_working_set_mb":  17.82
+                              },
+                              {
+                                  "process_id":  6800,
+                                  "process_name":  "net_updater64",
+                                  "start_private_mb":  171.48,
+                                  "end_private_mb":  171.94,
+                                  "growth_mb":  0.46,
+                                  "end_working_set_mb":  172.75
+                              },
+                              {
+                                  "process_id":  4724,
+                                  "process_name":  "svchost",
+                                  "start_private_mb":  37.52,
+                                  "end_private_mb":  37.96,
+                                  "growth_mb":  0.44,
+                                  "end_working_set_mb":  58.67
                               }
                           ],
     "top_cpu_applications":  [
                                  {
                                      "process_name":  "clipcarton",
-                                     "cpu_avg_pct":  6.67,
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  6.65,
+                                     "cpu_active_avg_pct":  6.65,
+                                     "cpu_peak_pct":  7.94,
                                      "io_read_bytes_sec_avg":  0,
                                      "io_write_bytes_sec_avg":  0,
-                                     "io_total_bytes_sec_avg":  0
+                                     "io_total_bytes_sec_avg":  0,
+                                     "io_active_bytes_sec_avg":  0,
+                                     "io_peak_bytes_sec":  0
                                  },
                                  {
                                      "process_name":  "services",
-                                     "cpu_avg_pct":  5.48,
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  5.54,
+                                     "cpu_active_avg_pct":  5.54,
+                                     "cpu_peak_pct":  7.37,
                                      "io_read_bytes_sec_avg":  0,
                                      "io_write_bytes_sec_avg":  0,
-                                     "io_total_bytes_sec_avg":  0
+                                     "io_total_bytes_sec_avg":  0,
+                                     "io_active_bytes_sec_avg":  0,
+                                     "io_peak_bytes_sec":  0
                                  },
                                  {
                                      "process_name":  "chrome",
-                                     "cpu_avg_pct":  1.69,
-                                     "io_read_bytes_sec_avg":  296828.13,
-                                     "io_write_bytes_sec_avg":  245996.49,
-                                     "io_total_bytes_sec_avg":  542824.62
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  4.72,
+                                     "cpu_active_avg_pct":  4.72,
+                                     "cpu_peak_pct":  21.19,
+                                     "io_read_bytes_sec_avg":  287269.59,
+                                     "io_write_bytes_sec_avg":  228649.72,
+                                     "io_total_bytes_sec_avg":  515919.31,
+                                     "io_active_bytes_sec_avg":  515919.31,
+                                     "io_peak_bytes_sec":  2043730.61
                                  },
                                  {
                                      "process_name":  "dwm",
-                                     "cpu_avg_pct":  1.65,
-                                     "io_read_bytes_sec_avg":  760.47,
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  1.47,
+                                     "cpu_active_avg_pct":  1.47,
+                                     "cpu_peak_pct":  2.52,
+                                     "io_read_bytes_sec_avg":  1151.17,
                                      "io_write_bytes_sec_avg":  0,
-                                     "io_total_bytes_sec_avg":  760.47
+                                     "io_total_bytes_sec_avg":  1151.17,
+                                     "io_active_bytes_sec_avg":  1151.17,
+                                     "io_peak_bytes_sec":  2582.76
                                  },
                                  {
                                      "process_name":  "taskmgr",
-                                     "cpu_avg_pct":  1.3,
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  1.35,
+                                     "cpu_active_avg_pct":  1.35,
+                                     "cpu_peak_pct":  1.94,
                                      "io_read_bytes_sec_avg":  0,
                                      "io_write_bytes_sec_avg":  0,
-                                     "io_total_bytes_sec_avg":  0
-                                 },
-                                 {
-                                     "process_name":  "code",
-                                     "cpu_avg_pct":  1.25,
-                                     "io_read_bytes_sec_avg":  153862.27,
-                                     "io_write_bytes_sec_avg":  153900.8,
-                                     "io_total_bytes_sec_avg":  307763.07
-                                 },
-                                 {
-                                     "process_name":  "explorer",
-                                     "cpu_avg_pct":  1.16,
-                                     "io_read_bytes_sec_avg":  4940.5,
-                                     "io_write_bytes_sec_avg":  0,
-                                     "io_total_bytes_sec_avg":  4940.5
+                                     "io_total_bytes_sec_avg":  0,
+                                     "io_active_bytes_sec_avg":  0,
+                                     "io_peak_bytes_sec":  0
                                  },
                                  {
                                      "process_name":  "wispr flow",
-                                     "cpu_avg_pct":  1.02,
-                                     "io_read_bytes_sec_avg":  23916.13,
-                                     "io_write_bytes_sec_avg":  23528.47,
-                                     "io_total_bytes_sec_avg":  47444.6
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  1.34,
+                                     "cpu_active_avg_pct":  1.34,
+                                     "cpu_peak_pct":  4.59,
+                                     "io_read_bytes_sec_avg":  30567.12,
+                                     "io_write_bytes_sec_avg":  30199.47,
+                                     "io_total_bytes_sec_avg":  60766.59,
+                                     "io_active_bytes_sec_avg":  60766.59,
+                                     "io_peak_bytes_sec":  210472.57
                                  },
                                  {
                                      "process_name":  "excel",
-                                     "cpu_avg_pct":  0.83,
-                                     "io_read_bytes_sec_avg":  194.13,
-                                     "io_write_bytes_sec_avg":  3658.34,
-                                     "io_total_bytes_sec_avg":  3852.47
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  1.16,
+                                     "cpu_active_avg_pct":  1.16,
+                                     "cpu_peak_pct":  5.62,
+                                     "io_read_bytes_sec_avg":  0,
+                                     "io_write_bytes_sec_avg":  0,
+                                     "io_total_bytes_sec_avg":  0,
+                                     "io_active_bytes_sec_avg":  0,
+                                     "io_peak_bytes_sec":  0
+                                 },
+                                 {
+                                     "process_name":  "explorer",
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  0.89,
+                                     "cpu_active_avg_pct":  0.89,
+                                     "cpu_peak_pct":  3.63,
+                                     "io_read_bytes_sec_avg":  5.89,
+                                     "io_write_bytes_sec_avg":  0,
+                                     "io_total_bytes_sec_avg":  5.89,
+                                     "io_active_bytes_sec_avg":  5.89,
+                                     "io_peak_bytes_sec":  170.85
                                  },
                                  {
                                      "process_name":  "system",
-                                     "cpu_avg_pct":  0.75,
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  0.55,
+                                     "cpu_active_avg_pct":  0.55,
+                                     "cpu_peak_pct":  2.89,
                                      "io_read_bytes_sec_avg":  0,
-                                     "io_write_bytes_sec_avg":  22556.01,
-                                     "io_total_bytes_sec_avg":  22556.01
+                                     "io_write_bytes_sec_avg":  12421.97,
+                                     "io_total_bytes_sec_avg":  12421.97,
+                                     "io_active_bytes_sec_avg":  12421.97,
+                                     "io_peak_bytes_sec":  129640.14
+                                 },
+                                 {
+                                     "process_name":  "svchost",
+                                     "active_sample_count":  29,
+                                     "cpu_avg_pct":  0.41,
+                                     "cpu_active_avg_pct":  0.41,
+                                     "cpu_peak_pct":  1.93,
+                                     "io_read_bytes_sec_avg":  20222.5,
+                                     "io_write_bytes_sec_avg":  1339.75,
+                                     "io_total_bytes_sec_avg":  21562.25,
+                                     "io_active_bytes_sec_avg":  21562.24,
+                                     "io_peak_bytes_sec":  147435.6
                                  }
                              ],
     "top_io_applications":  [
                                 {
                                     "process_name":  "chrome",
-                                    "cpu_avg_pct":  1.69,
-                                    "io_read_bytes_sec_avg":  296828.13,
-                                    "io_write_bytes_sec_avg":  245996.49,
-                                    "io_total_bytes_sec_avg":  542824.62
-                                },
-                                {
-                                    "process_name":  "code",
-                                    "cpu_avg_pct":  1.25,
-                                    "io_read_bytes_sec_avg":  153862.27,
-                                    "io_write_bytes_sec_avg":  153900.8,
-                                    "io_total_bytes_sec_avg":  307763.07
-                                },
-                                {
-                                    "process_name":  "wispr flow",
-                                    "cpu_avg_pct":  1.02,
-                                    "io_read_bytes_sec_avg":  23916.13,
-                                    "io_write_bytes_sec_avg":  23528.47,
-                                    "io_total_bytes_sec_avg":  47444.6
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  4.72,
+                                    "cpu_active_avg_pct":  4.72,
+                                    "cpu_peak_pct":  21.19,
+                                    "io_read_bytes_sec_avg":  287269.59,
+                                    "io_write_bytes_sec_avg":  228649.72,
+                                    "io_total_bytes_sec_avg":  515919.31,
+                                    "io_active_bytes_sec_avg":  515919.31,
+                                    "io_peak_bytes_sec":  2043730.61
                                 },
                                 {
                                     "process_name":  "net_updater64",
+                                    "active_sample_count":  29,
                                     "cpu_avg_pct":  0.21,
-                                    "io_read_bytes_sec_avg":  33150.59,
-                                    "io_write_bytes_sec_avg":  1262.88,
-                                    "io_total_bytes_sec_avg":  34413.47
+                                    "cpu_active_avg_pct":  0.21,
+                                    "cpu_peak_pct":  2.3,
+                                    "io_read_bytes_sec_avg":  68486.56,
+                                    "io_write_bytes_sec_avg":  2476.5,
+                                    "io_total_bytes_sec_avg":  70963.06,
+                                    "io_active_bytes_sec_avg":  70963.06,
+                                    "io_peak_bytes_sec":  1987005.12
+                                },
+                                {
+                                    "process_name":  "wispr flow",
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  1.34,
+                                    "cpu_active_avg_pct":  1.34,
+                                    "cpu_peak_pct":  4.59,
+                                    "io_read_bytes_sec_avg":  30567.12,
+                                    "io_write_bytes_sec_avg":  30199.47,
+                                    "io_total_bytes_sec_avg":  60766.59,
+                                    "io_active_bytes_sec_avg":  60766.59,
+                                    "io_peak_bytes_sec":  210472.57
                                 },
                                 {
                                     "process_name":  "svchost",
-                                    "cpu_avg_pct":  0.67,
-                                    "io_read_bytes_sec_avg":  24904.64,
-                                    "io_write_bytes_sec_avg":  6237.32,
-                                    "io_total_bytes_sec_avg":  31141.96
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.41,
+                                    "cpu_active_avg_pct":  0.41,
+                                    "cpu_peak_pct":  1.93,
+                                    "io_read_bytes_sec_avg":  20222.5,
+                                    "io_write_bytes_sec_avg":  1339.75,
+                                    "io_total_bytes_sec_avg":  21562.25,
+                                    "io_active_bytes_sec_avg":  21562.24,
+                                    "io_peak_bytes_sec":  147435.6
                                 },
                                 {
                                     "process_name":  "system",
-                                    "cpu_avg_pct":  0.75,
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.55,
+                                    "cpu_active_avg_pct":  0.55,
+                                    "cpu_peak_pct":  2.89,
                                     "io_read_bytes_sec_avg":  0,
-                                    "io_write_bytes_sec_avg":  22556.01,
-                                    "io_total_bytes_sec_avg":  22556.01
+                                    "io_write_bytes_sec_avg":  12421.97,
+                                    "io_total_bytes_sec_avg":  12421.97,
+                                    "io_active_bytes_sec_avg":  12421.97,
+                                    "io_peak_bytes_sec":  129640.14
                                 },
                                 {
-                                    "process_name":  "explorer",
-                                    "cpu_avg_pct":  1.16,
-                                    "io_read_bytes_sec_avg":  4940.5,
+                                    "process_name":  "searchprotocolhost",
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.03,
+                                    "cpu_active_avg_pct":  0.03,
+                                    "cpu_peak_pct":  0.95,
+                                    "io_read_bytes_sec_avg":  11161.51,
                                     "io_write_bytes_sec_avg":  0,
-                                    "io_total_bytes_sec_avg":  4940.5
-                                },
-                                {
-                                    "process_name":  "wispr flow helper",
-                                    "cpu_avg_pct":  0.11,
-                                    "io_read_bytes_sec_avg":  4025.71,
-                                    "io_write_bytes_sec_avg":  597.87,
-                                    "io_total_bytes_sec_avg":  4623.58
+                                    "io_total_bytes_sec_avg":  11161.51,
+                                    "io_active_bytes_sec_avg":  11161.51,
+                                    "io_peak_bytes_sec":  323683.71
                                 },
                                 {
                                     "process_name":  "hola_svc",
-                                    "cpu_avg_pct":  0.06,
-                                    "io_read_bytes_sec_avg":  2216.64,
-                                    "io_write_bytes_sec_avg":  2216.64,
-                                    "io_total_bytes_sec_avg":  4433.28
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.02,
+                                    "cpu_active_avg_pct":  0.02,
+                                    "cpu_peak_pct":  0.19,
+                                    "io_read_bytes_sec_avg":  2183.6,
+                                    "io_write_bytes_sec_avg":  2183.6,
+                                    "io_total_bytes_sec_avg":  4367.2,
+                                    "io_active_bytes_sec_avg":  4367.21,
+                                    "io_peak_bytes_sec":  4400.25
                                 },
                                 {
-                                    "process_name":  "excel",
-                                    "cpu_avg_pct":  0.83,
-                                    "io_read_bytes_sec_avg":  194.13,
-                                    "io_write_bytes_sec_avg":  3658.34,
-                                    "io_total_bytes_sec_avg":  3852.47
+                                    "process_name":  "wispr flow helper",
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.11,
+                                    "cpu_active_avg_pct":  0.11,
+                                    "cpu_peak_pct":  0.39,
+                                    "io_read_bytes_sec_avg":  2883.22,
+                                    "io_write_bytes_sec_avg":  651.99,
+                                    "io_total_bytes_sec_avg":  3535.21,
+                                    "io_active_bytes_sec_avg":  3535.21,
+                                    "io_peak_bytes_sec":  39890.29
+                                },
+                                {
+                                    "process_name":  "searchindexer",
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.11,
+                                    "cpu_active_avg_pct":  0.11,
+                                    "cpu_peak_pct":  3.05,
+                                    "io_read_bytes_sec_avg":  0,
+                                    "io_write_bytes_sec_avg":  1812.67,
+                                    "io_total_bytes_sec_avg":  1812.67,
+                                    "io_active_bytes_sec_avg":  1812.67,
+                                    "io_peak_bytes_sec":  52567.3
+                                },
+                                {
+                                    "process_name":  "everything",
+                                    "active_sample_count":  29,
+                                    "cpu_avg_pct":  0.03,
+                                    "cpu_active_avg_pct":  0.03,
+                                    "cpu_peak_pct":  0.38,
+                                    "io_read_bytes_sec_avg":  633.11,
+                                    "io_write_bytes_sec_avg":  632.7,
+                                    "io_total_bytes_sec_avg":  1265.81,
+                                    "io_active_bytes_sec_avg":  1265.81,
+                                    "io_peak_bytes_sec":  6180.27
                                 }
-                            ]
+                            ],
+    "top_cpu_peak_applications":  [
+                                      {
+                                          "process_name":  "chrome",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  4.72,
+                                          "cpu_active_avg_pct":  4.72,
+                                          "cpu_peak_pct":  21.19,
+                                          "io_read_bytes_sec_avg":  287269.59,
+                                          "io_write_bytes_sec_avg":  228649.72,
+                                          "io_total_bytes_sec_avg":  515919.31,
+                                          "io_active_bytes_sec_avg":  515919.31,
+                                          "io_peak_bytes_sec":  2043730.61
+                                      },
+                                      {
+                                          "process_name":  "clipcarton",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  6.65,
+                                          "cpu_active_avg_pct":  6.65,
+                                          "cpu_peak_pct":  7.94,
+                                          "io_read_bytes_sec_avg":  0,
+                                          "io_write_bytes_sec_avg":  0,
+                                          "io_total_bytes_sec_avg":  0,
+                                          "io_active_bytes_sec_avg":  0,
+                                          "io_peak_bytes_sec":  0
+                                      },
+                                      {
+                                          "process_name":  "services",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  5.54,
+                                          "cpu_active_avg_pct":  5.54,
+                                          "cpu_peak_pct":  7.37,
+                                          "io_read_bytes_sec_avg":  0,
+                                          "io_write_bytes_sec_avg":  0,
+                                          "io_total_bytes_sec_avg":  0,
+                                          "io_active_bytes_sec_avg":  0,
+                                          "io_peak_bytes_sec":  0
+                                      },
+                                      {
+                                          "process_name":  "excel",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  1.16,
+                                          "cpu_active_avg_pct":  1.16,
+                                          "cpu_peak_pct":  5.62,
+                                          "io_read_bytes_sec_avg":  0,
+                                          "io_write_bytes_sec_avg":  0,
+                                          "io_total_bytes_sec_avg":  0,
+                                          "io_active_bytes_sec_avg":  0,
+                                          "io_peak_bytes_sec":  0
+                                      },
+                                      {
+                                          "process_name":  "wispr flow",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  1.34,
+                                          "cpu_active_avg_pct":  1.34,
+                                          "cpu_peak_pct":  4.59,
+                                          "io_read_bytes_sec_avg":  30567.12,
+                                          "io_write_bytes_sec_avg":  30199.47,
+                                          "io_total_bytes_sec_avg":  60766.59,
+                                          "io_active_bytes_sec_avg":  60766.59,
+                                          "io_peak_bytes_sec":  210472.57
+                                      },
+                                      {
+                                          "process_name":  "explorer",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  0.89,
+                                          "cpu_active_avg_pct":  0.89,
+                                          "cpu_peak_pct":  3.63,
+                                          "io_read_bytes_sec_avg":  5.89,
+                                          "io_write_bytes_sec_avg":  0,
+                                          "io_total_bytes_sec_avg":  5.89,
+                                          "io_active_bytes_sec_avg":  5.89,
+                                          "io_peak_bytes_sec":  170.85
+                                      },
+                                      {
+                                          "process_name":  "code",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  0.21,
+                                          "cpu_active_avg_pct":  0.21,
+                                          "cpu_peak_pct":  3.47,
+                                          "io_read_bytes_sec_avg":  429.71,
+                                          "io_write_bytes_sec_avg":  469.73,
+                                          "io_total_bytes_sec_avg":  899.44,
+                                          "io_active_bytes_sec_avg":  899.44,
+                                          "io_peak_bytes_sec":  5321.17
+                                      },
+                                      {
+                                          "process_name":  "searchindexer",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  0.11,
+                                          "cpu_active_avg_pct":  0.11,
+                                          "cpu_peak_pct":  3.05,
+                                          "io_read_bytes_sec_avg":  0,
+                                          "io_write_bytes_sec_avg":  1812.67,
+                                          "io_total_bytes_sec_avg":  1812.67,
+                                          "io_active_bytes_sec_avg":  1812.67,
+                                          "io_peak_bytes_sec":  52567.3
+                                      },
+                                      {
+                                          "process_name":  "system",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  0.55,
+                                          "cpu_active_avg_pct":  0.55,
+                                          "cpu_peak_pct":  2.89,
+                                          "io_read_bytes_sec_avg":  0,
+                                          "io_write_bytes_sec_avg":  12421.97,
+                                          "io_total_bytes_sec_avg":  12421.97,
+                                          "io_active_bytes_sec_avg":  12421.97,
+                                          "io_peak_bytes_sec":  129640.14
+                                      },
+                                      {
+                                          "process_name":  "dwm",
+                                          "active_sample_count":  29,
+                                          "cpu_avg_pct":  1.47,
+                                          "cpu_active_avg_pct":  1.47,
+                                          "cpu_peak_pct":  2.52,
+                                          "io_read_bytes_sec_avg":  1151.17,
+                                          "io_write_bytes_sec_avg":  0,
+                                          "io_total_bytes_sec_avg":  1151.17,
+                                          "io_active_bytes_sec_avg":  1151.17,
+                                          "io_peak_bytes_sec":  2582.76
+                                      }
+                                  ],
+    "top_io_peak_applications":  [
+                                     {
+                                         "process_name":  "chrome",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  4.72,
+                                         "cpu_active_avg_pct":  4.72,
+                                         "cpu_peak_pct":  21.19,
+                                         "io_read_bytes_sec_avg":  287269.59,
+                                         "io_write_bytes_sec_avg":  228649.72,
+                                         "io_total_bytes_sec_avg":  515919.31,
+                                         "io_active_bytes_sec_avg":  515919.31,
+                                         "io_peak_bytes_sec":  2043730.61
+                                     },
+                                     {
+                                         "process_name":  "net_updater64",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.21,
+                                         "cpu_active_avg_pct":  0.21,
+                                         "cpu_peak_pct":  2.3,
+                                         "io_read_bytes_sec_avg":  68486.56,
+                                         "io_write_bytes_sec_avg":  2476.5,
+                                         "io_total_bytes_sec_avg":  70963.06,
+                                         "io_active_bytes_sec_avg":  70963.06,
+                                         "io_peak_bytes_sec":  1987005.12
+                                     },
+                                     {
+                                         "process_name":  "searchprotocolhost",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.03,
+                                         "cpu_active_avg_pct":  0.03,
+                                         "cpu_peak_pct":  0.95,
+                                         "io_read_bytes_sec_avg":  11161.51,
+                                         "io_write_bytes_sec_avg":  0,
+                                         "io_total_bytes_sec_avg":  11161.51,
+                                         "io_active_bytes_sec_avg":  11161.51,
+                                         "io_peak_bytes_sec":  323683.71
+                                     },
+                                     {
+                                         "process_name":  "wispr flow",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  1.34,
+                                         "cpu_active_avg_pct":  1.34,
+                                         "cpu_peak_pct":  4.59,
+                                         "io_read_bytes_sec_avg":  30567.12,
+                                         "io_write_bytes_sec_avg":  30199.47,
+                                         "io_total_bytes_sec_avg":  60766.59,
+                                         "io_active_bytes_sec_avg":  60766.59,
+                                         "io_peak_bytes_sec":  210472.57
+                                     },
+                                     {
+                                         "process_name":  "svchost",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.41,
+                                         "cpu_active_avg_pct":  0.41,
+                                         "cpu_peak_pct":  1.93,
+                                         "io_read_bytes_sec_avg":  20222.5,
+                                         "io_write_bytes_sec_avg":  1339.75,
+                                         "io_total_bytes_sec_avg":  21562.25,
+                                         "io_active_bytes_sec_avg":  21562.24,
+                                         "io_peak_bytes_sec":  147435.6
+                                     },
+                                     {
+                                         "process_name":  "system",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.55,
+                                         "cpu_active_avg_pct":  0.55,
+                                         "cpu_peak_pct":  2.89,
+                                         "io_read_bytes_sec_avg":  0,
+                                         "io_write_bytes_sec_avg":  12421.97,
+                                         "io_total_bytes_sec_avg":  12421.97,
+                                         "io_active_bytes_sec_avg":  12421.97,
+                                         "io_peak_bytes_sec":  129640.14
+                                     },
+                                     {
+                                         "process_name":  "searchindexer",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.11,
+                                         "cpu_active_avg_pct":  0.11,
+                                         "cpu_peak_pct":  3.05,
+                                         "io_read_bytes_sec_avg":  0,
+                                         "io_write_bytes_sec_avg":  1812.67,
+                                         "io_total_bytes_sec_avg":  1812.67,
+                                         "io_active_bytes_sec_avg":  1812.67,
+                                         "io_peak_bytes_sec":  52567.3
+                                     },
+                                     {
+                                         "process_name":  "wispr flow helper",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.11,
+                                         "cpu_active_avg_pct":  0.11,
+                                         "cpu_peak_pct":  0.39,
+                                         "io_read_bytes_sec_avg":  2883.22,
+                                         "io_write_bytes_sec_avg":  651.99,
+                                         "io_total_bytes_sec_avg":  3535.21,
+                                         "io_active_bytes_sec_avg":  3535.21,
+                                         "io_peak_bytes_sec":  39890.29
+                                     },
+                                     {
+                                         "process_name":  "taskhostw",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0,
+                                         "cpu_active_avg_pct":  0,
+                                         "cpu_peak_pct":  0,
+                                         "io_read_bytes_sec_avg":  0,
+                                         "io_write_bytes_sec_avg":  420.29,
+                                         "io_total_bytes_sec_avg":  420.29,
+                                         "io_active_bytes_sec_avg":  420.29,
+                                         "io_peak_bytes_sec":  12188.29
+                                     },
+                                     {
+                                         "process_name":  "everything",
+                                         "active_sample_count":  29,
+                                         "cpu_avg_pct":  0.03,
+                                         "cpu_active_avg_pct":  0.03,
+                                         "cpu_peak_pct":  0.38,
+                                         "io_read_bytes_sec_avg":  633.11,
+                                         "io_write_bytes_sec_avg":  632.7,
+                                         "io_total_bytes_sec_avg":  1265.81,
+                                         "io_active_bytes_sec_avg":  1265.81,
+                                         "io_peak_bytes_sec":  6180.27
+                                     }
+                                 ]
 }
