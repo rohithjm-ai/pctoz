@@ -301,7 +301,8 @@ try {
         Select-Object -First 10
     )
     $expectedSampleCount = 30
-    $validSampleCount = $cpu.Count
+
+    $validSampleCount = $actualSampleCount
 
     $sampleQualityPct = 0
 
@@ -320,6 +321,9 @@ try {
 
         sample_interval_seconds  = 2
         sample_count             = $actualSampleCount
+        expected_sample_count    = $expectedSampleCount
+        sample_quality_pct       = $sampleQualityPct
+
         logical_processors       = $logicalProcessors
 
         cpu_avg_pct              = Get-Average $cpu
