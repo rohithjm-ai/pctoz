@@ -186,31 +186,31 @@ function Get-ProcessCounterSummary {
 
         if (-not $perSample.ContainsKey($key)) {
             $perSample[$key] = [ordered]@{
-                process_name   = $processName
-                cpu_raw        = 0.0
-                io_read        = 0.0
-                io_write       = 0.0
+                process_name = $processName
+                cpu_raw      = 0.0
+                io_read      = 0.0
+                io_write     = 0.0
             }
         }
 
         $value = [double]$counterSample.CookedValue
 
         if ($path.EndsWith(
-            '\% processor time',
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                '\% processor time',
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             $perSample[$key].cpu_raw += $value
         }
         elseif ($path.EndsWith(
-            '\io read bytes/sec',
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                '\io read bytes/sec',
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             $perSample[$key].io_read += $value
         }
         elseif ($path.EndsWith(
-            '\io write bytes/sec',
-            [System.StringComparison]::OrdinalIgnoreCase
-        )) {
+                '\io write bytes/sec',
+                [System.StringComparison]::OrdinalIgnoreCase
+            )) {
             $perSample[$key].io_write += $value
         }
     }
@@ -224,13 +224,13 @@ function Get-ProcessCounterSummary {
 
         if (-not $summary.ContainsKey($processName)) {
             $summary[$processName] = [ordered]@{
-                process_name       = $processName
-                active_samples     = 0
-                cpu_sum_pct        = 0.0
-                cpu_peak_pct       = 0.0
-                io_read_sum        = 0.0
-                io_write_sum       = 0.0
-                io_total_peak      = 0.0
+                process_name   = $processName
+                active_samples = 0
+                cpu_sum_pct    = 0.0
+                cpu_peak_pct   = 0.0
+                io_read_sum    = 0.0
+                io_write_sum   = 0.0
+                io_total_peak  = 0.0
             }
         }
 
@@ -241,8 +241,8 @@ function Get-ProcessCounterSummary {
         }
 
         $ioTotal =
-            [double]$sampleItem.io_read +
-            [double]$sampleItem.io_write
+        [double]$sampleItem.io_read +
+        [double]$sampleItem.io_write
 
         $summary[$processName].active_samples += 1
         $summary[$processName].cpu_sum_pct += $cpuPct
@@ -301,22 +301,22 @@ function Get-ProcessCounterSummary {
         }
 
         $rows += [PSCustomObject][ordered]@{
-            process_name                = $processName
-            active_sample_count         = $activeSamples
+            process_name            = $processName
+            active_sample_count     = $activeSamples
 
-            cpu_avg_pct                 = $cpuAverage
-            cpu_active_avg_pct          = $cpuActiveAverage
-            cpu_peak_pct                = [math]::Round($item.cpu_peak_pct, 2)
+            cpu_avg_pct             = $cpuAverage
+            cpu_active_avg_pct      = $cpuActiveAverage
+            cpu_peak_pct            = [math]::Round($item.cpu_peak_pct, 2)
 
-            io_read_bytes_sec_avg       = $readAverage
-            io_write_bytes_sec_avg      = $writeAverage
-            io_total_bytes_sec_avg      = [math]::Round(
+            io_read_bytes_sec_avg   = $readAverage
+            io_write_bytes_sec_avg  = $writeAverage
+            io_total_bytes_sec_avg  = [math]::Round(
                 ($readAverage + $writeAverage),
                 2
             )
 
-            io_active_bytes_sec_avg     = $ioActiveAverage
-            io_peak_bytes_sec           = [math]::Round(
+            io_active_bytes_sec_avg = $ioActiveAverage
+            io_peak_bytes_sec       = [math]::Round(
                 $item.io_total_peak,
                 2
             )
@@ -467,38 +467,38 @@ try {
     }
 
     $result = [ordered]@{
-        session_id               = $SessionId
-        tool                     = "PERF_SAMPLE"
-        status                   = "success"
+        session_id                = $SessionId
+        tool                      = "PERF_SAMPLE"
+        status                    = "success"
 
-        sample_interval_seconds  = 2
-        sample_count             = $actualSampleCount
-        expected_sample_count    = $expectedSampleCount
-        sample_quality_pct       = $sampleQualityPct
+        sample_interval_seconds   = 2
+        sample_count              = $actualSampleCount
+        expected_sample_count     = $expectedSampleCount
+        sample_quality_pct        = $sampleQualityPct
 
-        logical_processors       = $logicalProcessors
+        logical_processors        = $logicalProcessors
 
-        cpu_avg_pct              = Get-Average $cpu
-        cpu_max_pct              = Get-Maximum $cpu
+        cpu_avg_pct               = Get-Average $cpu
+        cpu_max_pct               = Get-Maximum $cpu
 
-        memory_committed_avg_pct = Get-Average $memoryUsed
-        memory_committed_max_pct = Get-Maximum $memoryUsed
-        memory_available_min_mb  = Get-Minimum $memoryAvailable
+        memory_committed_avg_pct  = Get-Average $memoryUsed
+        memory_committed_max_pct  = Get-Maximum $memoryUsed
+        memory_available_min_mb   = Get-Minimum $memoryAvailable
 
-        pages_sec_avg            = Get-Average $pages
-        pages_sec_max            = Get-Maximum $pages
-        pages_input_sec_avg      = Get-Average $pagesInput
-        pages_input_sec_max      = Get-Maximum $pagesInput
-        page_reads_sec_avg       = Get-Average $pageReads
-        page_reads_sec_max       = Get-Maximum $pageReads
+        pages_sec_avg             = Get-Average $pages
+        pages_sec_max             = Get-Maximum $pages
+        pages_input_sec_avg       = Get-Average $pagesInput
+        pages_input_sec_max       = Get-Maximum $pagesInput
+        page_reads_sec_avg        = Get-Average $pageReads
+        page_reads_sec_max        = Get-Maximum $pageReads
 
-        disk_active_avg_pct      = Get-Average $diskActive
-        disk_active_max_pct      = Get-Maximum $diskActive
-        disk_queue_avg           = Get-Average $diskQueue
-        disk_queue_max           = Get-Maximum $diskQueue
-        disk_latency_avg_ms      = Get-Average $diskLatencyMs
-        disk_latency_max_ms      = Get-Maximum $diskLatencyMs
-        disk_bytes_sec_avg       = Get-Average $diskBytes
+        disk_active_avg_pct       = Get-Average $diskActive
+        disk_active_max_pct       = Get-Maximum $diskActive
+        disk_queue_avg            = Get-Average $diskQueue
+        disk_queue_max            = Get-Maximum $diskQueue
+        disk_latency_avg_ms       = Get-Average $diskLatencyMs
+        disk_latency_max_ms       = Get-Maximum $diskLatencyMs
+        disk_bytes_sec_avg        = Get-Average $diskBytes
 
         top_memory_processes      = $topMemoryProcesses
         top_memory_growth         = $topMemoryGrowth
@@ -530,6 +530,21 @@ try {
     Write-Host ""
     Write-Host "Result:"
     Write-Host $resultPath
+    $UploadUrl = "http://192.168.0.104/pctoz/perf_sample_receive.php"
+
+    Write-Host ""
+    Write-Host "Uploading performance sample..."
+
+    $response = & curl.exe -sS `
+        -X POST `
+        -F "session_id=$SessionId" `
+        -F "collector_token=$CollectorToken" `
+        -F "json=<$resultPath" 
+        $UploadUrl
+
+    Write-Host ""
+    Write-Host "Server response:"
+    Write-Host $response
 }
 catch {
     Write-Host ""
