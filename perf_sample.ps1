@@ -535,12 +535,16 @@ try {
     Write-Host ""
     Write-Host "Uploading performance sample..."
 
-    $response = & curl.exe -sS `
-        -X POST `
-        -F "session_id=$SessionId" `
-        -F "collector_token=$CollectorToken" `
-        -F "json=<$resultPath" 
+    $curlArgs = @(
+        '-sS',
+        '-X', 'POST',
+        '-F', "session_id=$SessionId",
+        '-F', "collector_token=$CollectorToken",
+        '-F', "json=<$resultPath",
         $UploadUrl
+    )
+
+    $response = & curl.exe @curlArgs
 
     Write-Host ""
     Write-Host "Server response:"
