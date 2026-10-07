@@ -530,7 +530,7 @@ try {
     Write-Host ""
     Write-Host "Result:"
     Write-Host $resultPath
-    $UploadUrl = "http://192.168.0.104/pctoz/perf_sample_receive.php"
+    $UploadUrl = "http://192.168.0.105/pctoz/perf_sample_receive.php"
 
     Write-Host ""
     Write-Host "Uploading performance sample..."

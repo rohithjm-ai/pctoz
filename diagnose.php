@@ -1205,6 +1205,23 @@ if (
         $nextNodeId,
         $sessionId
     ]);
+    if ($nextNodeId === 'GENERAL-M020') {
+
+        $perfToken = bin2hex(random_bytes(32));
+
+        $stmtToken = $pdo->prepare("
+        UPDATE diagnostic_sessions
+        SET
+            collector_token = ?,
+            collector_token_expires_at = DATE_ADD(NOW(), INTERVAL 2 HOUR)
+        WHERE session_id = ?
+    ");
+
+        $stmtToken->execute([
+            $perfToken,
+            $sessionId
+        ]);
+    }
 
     header("Location: diagnose.php");
     exit;
@@ -2451,6 +2468,69 @@ $previousSuggestions = $stmt->fetchAll();
 
                     <?php endif; ?>
                 <?php endif; ?>
+
+            <?php endif; ?>
+            <?php if (
+                $node['node_id'] === 'GENERAL-M020'
+                && $node['tool_code'] === 'PERF_SAMPLE'
+            ): ?>
+
+                <div class="info" style="margin-top:20px;">
+
+                    <strong>Performance test</strong>
+
+                    <p>
+                        Open and use the programs, browser tabs or files
+                        that normally make this computer slow.
+                    </p>
+
+                    <p>
+                        When the slowdown is happening, click
+                        <strong>Start performance test</strong>.
+                    </p>
+
+                    <p>
+                        Continue using the computer normally during
+                        the approximately 60-second test.
+                    </p>
+
+                    <?php
+                    $perfLaunchUrl =
+                        'pctozcheck://run?session=' .
+                        urlencode((string)$sessionId) .
+                        '&token=' .
+                        urlencode((string)($sessionRow['collector_token'] ?? '')) .
+                        '&tool=PERF_SAMPLE';
+                    ?>
+
+                    <p>
+                        <a
+                            href="<?php echo htmlspecialchars($perfLaunchUrl); ?>"
+                            style="
+                    display:inline-block;
+                    padding:12px 18px;
+                    background:#222;
+                    color:white;
+                    text-decoration:none;
+                    border-radius:6px;
+                    font-weight:bold;
+                ">
+                            Start performance test
+                        </a>
+                    </p>
+
+                    <p>
+                        PCTOZ will return here automatically when
+                        the measurement has been received.
+                    </p>
+
+                </div>
+
+                <script>
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 3000);
+                </script>
 
             <?php endif; ?>
             <?php if (
