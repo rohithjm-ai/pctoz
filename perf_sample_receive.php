@@ -210,11 +210,9 @@ try {
         if (is_bool($value)) {
 
             $valueText = $value ? 'true' : 'false';
-
         } elseif (is_numeric($value)) {
 
             $valueNumber = $value;
-
         } else {
 
             $valueText = trim((string)$value);
@@ -227,6 +225,118 @@ try {
             $valueNumber,
             $valueText
         ]);
+    }
+    /*
+|--------------------------------------------------------------------------
+| Store PERF_SAMPLE application/process summaries
+|--------------------------------------------------------------------------
+*/
+
+    $stmt = $pdo->prepare("
+    DELETE FROM session_perf_apps
+    WHERE session_id = ?
+");
+
+    $stmt->execute([$sessionId]);
+
+
+    $insertPerfApp = $pdo->prepare("
+    INSERT INTO session_perf_apps
+    (
+        session_id,
+        category,
+        process_name,
+        active_sample_count,
+
+        cpu_avg_pct,
+        cpu_active_avg_pct,
+        cpu_peak_pct,
+
+        io_read_bytes_sec_avg,
+        io_write_bytes_sec_avg,
+        io_total_bytes_sec_avg,
+        io_active_bytes_sec_avg,
+        io_peak_bytes_sec,
+
+        start_private_mb,
+        end_private_mb,
+        growth_mb,
+        end_working_set_mb
+    )
+    VALUES
+    (
+        ?, ?, ?, ?,
+        ?, ?, ?,
+        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?
+    )
+");
+
+
+    $perfArrays = [
+
+        'TOP_MEMORY' =>
+        $data['top_memory_processes'] ?? [],
+
+        'MEMORY_GROWTH' =>
+        $data['top_memory_growth'] ?? [],
+
+        'TOP_CPU' =>
+        $data['top_cpu_applications'] ?? [],
+
+        'TOP_IO' =>
+        $data['top_io_applications'] ?? [],
+
+        'CPU_PEAK' =>
+        $data['top_cpu_peak_applications'] ?? [],
+
+        'IO_PEAK' =>
+        $data['top_io_peak_applications'] ?? []
+    ];
+
+
+    foreach ($perfArrays as $category => $rows) {
+
+        if (!is_array($rows)) {
+            continue;
+        }
+
+        foreach ($rows as $row) {
+
+            if (!is_array($row)) {
+                continue;
+            }
+
+            $processName =
+                trim((string)($row['process_name'] ?? ''));
+
+            if ($processName === '') {
+                continue;
+            }
+
+            $insertPerfApp->execute([
+                $sessionId,
+                $category,
+                $processName,
+
+                $row['active_sample_count'] ?? null,
+
+                $row['cpu_avg_pct'] ?? null,
+                $row['cpu_active_avg_pct'] ?? null,
+                $row['cpu_peak_pct'] ?? null,
+
+                $row['io_read_bytes_sec_avg'] ?? null,
+                $row['io_write_bytes_sec_avg'] ?? null,
+                $row['io_total_bytes_sec_avg'] ?? null,
+                $row['io_active_bytes_sec_avg'] ?? null,
+                $row['io_peak_bytes_sec'] ?? null,
+
+                $row['start_private_mb'] ?? null,
+                $row['end_private_mb'] ?? null,
+                $row['growth_mb'] ?? null,
+                $row['end_working_set_mb'] ?? null
+            ]);
+        }
     }
 
 
@@ -254,7 +364,6 @@ try {
         'tool' => 'PERF_SAMPLE',
         'next_node' => 'GENERAL-R025'
     ]);
-
 } catch (Throwable $e) {
 
     $pdo->rollBack();
