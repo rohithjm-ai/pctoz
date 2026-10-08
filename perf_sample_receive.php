@@ -348,7 +348,7 @@ try {
 
     $stmt = $pdo->prepare("
         UPDATE diagnostic_sessions
-        SET current_node_id = 'GENERAL-R025'
+        SET current_node_id = 'GENERAL-Q025'
         WHERE session_id = ?
     ");
 
@@ -362,7 +362,7 @@ try {
         'ok' => true,
         'session_id' => $sessionId,
         'tool' => 'PERF_SAMPLE',
-        'next_node' => 'GENERAL-R025'
+        'next_node' => 'GENERAL-Q025'
     ]);
 } catch (Throwable $e) {
 
