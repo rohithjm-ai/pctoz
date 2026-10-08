@@ -1360,6 +1360,41 @@ if (
 }
 
 $node = getNode($pdo, $currentNodeId);
+$perfEvidence = [];
+$perfApps = [];
+
+if ($currentNodeId === 'GENERAL-R025') {
+
+    $stmt = $pdo->prepare("
+        SELECT field_code, value_number, value_text
+        FROM observations
+        WHERE session_id = ?
+          AND source_detail = 'PERF_SAMPLE'
+        ORDER BY observation_id DESC
+    ");
+
+    $stmt->execute([$sessionId]);
+
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        if (!array_key_exists($row['field_code'], $perfEvidence)) {
+            $perfEvidence[$row['field_code']] =
+                $row['value_number'] !== null
+                ? $row['value_number']
+                : $row['value_text'];
+        }
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT *
+        FROM session_perf_apps
+        WHERE session_id = ?
+          AND category IN ('TOP_CPU', 'TOP_IO', 'MEMORY_GROWTH')
+        ORDER BY category, session_perf_app_id
+    ");
+
+    $stmt->execute([$sessionId]);
+    $perfApps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 /*
 if (
     $currentNodeId === 'ROOT-RUN010'
@@ -2641,6 +2676,68 @@ $previousSuggestions = $stmt->fetchAll();
             <?php endif; ?>
 
         </div>
+        <?php if ($currentNodeId === 'GENERAL-R025'): ?>
+
+            <div class="card">
+                <h3>Performance measurement</h3>
+
+                <p>
+                    Sample quality:
+                    <?= htmlspecialchars((string)($perfEvidence['sample_quality_pct'] ?? 'N/A')) ?>%
+                </p>
+
+                <p>
+                    CPU average:
+                    <?= htmlspecialchars((string)($perfEvidence['cpu_avg_pct'] ?? 'N/A')) ?>%
+                    |
+                    Peak:
+                    <?= htmlspecialchars((string)($perfEvidence['cpu_max_pct'] ?? 'N/A')) ?>%
+                </p>
+
+                <p>
+                    Minimum available RAM:
+                    <?= htmlspecialchars((string)($perfEvidence['memory_available_min_mb'] ?? 'N/A')) ?> MB
+                </p>
+
+                <p>
+                    Disk queue average:
+                    <?= htmlspecialchars((string)($perfEvidence['disk_queue_avg'] ?? 'N/A')) ?>
+                </p>
+
+                <p>
+                    Disk latency average:
+                    <?= htmlspecialchars((string)($perfEvidence['disk_latency_avg_ms'] ?? 'N/A')) ?> ms
+                </p>
+
+                <h4>Applications observed</h4>
+
+                <table border="1" cellpadding="6">
+                    <tr>
+                        <th>Category</th>
+                        <th>Application</th>
+                        <th>CPU average %</th>
+                        <th>I/O bytes/sec</th>
+                        <th>Memory growth MB</th>
+                    </tr>
+
+                    <?php foreach ($perfApps as $app): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($app['category']) ?></td>
+                            <td><?= htmlspecialchars($app['process_name']) ?></td>
+                            <td><?= htmlspecialchars((string)($app['cpu_avg_pct'] ?? '-')) ?></td>
+                            <td><?= htmlspecialchars((string)($app['io_total_bytes_sec_avg'] ?? '-')) ?></td>
+                            <td><?= htmlspecialchars((string)($app['growth_mb'] ?? '-')) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+
+                <p><small>
+                        These are measurements, not yet diagnostic conclusions.
+                    </small></p>
+            </div>
+
+        <?php endif; ?>
+
 
 
         <div class="card">
