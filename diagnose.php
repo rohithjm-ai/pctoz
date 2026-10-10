@@ -1003,16 +1003,6 @@ if (
     header("Location: diagnose.php");
     exit;
 }
-if (
-    $_SERVER['REQUEST_METHOD'] === 'POST'
-    && ($_POST['action'] ?? '') === 'regenerate_findings'
-) {
-
-    generateSessionFindings($pdo, $sessionId);
-
-    header("Location: diagnose.php");
-    exit;
-}
 /*
 |--------------------------------------------------------------------------
 | CONTINUE NON-QUESTION NODE
