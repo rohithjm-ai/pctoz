@@ -687,6 +687,14 @@ LOCK TABLES `tree_rules` WRITE;
 INSERT INTO `tree_rules` VALUES (1,'BOOT-R030',1,'A',1,'startup_load_status','=','high','STARTUP_LOAD_LIKELY','Excessive startup activity may be contributing to the slowdown.','BOOT-A040',1),(2,'BOOT-R030',2,'A',1,'startup_load_status','=','normal','STARTUP_LOAD_NOT_CONFIRMED','Startup-program load does not sufficiently explain the problem.','REMOTE-E001',1),(3,'BOOT-R030',3,'A',1,'startup_load_status','=','unknown','INSUFFICIENT_EVIDENCE','There is not enough evidence to diagnose this safely.','REMOTE-E001',1),(7,'DISK-R010',1,'A',1,'disk_danger_symptom','=','clicking','POSSIBLE_DISK_FAILURE','Unusual mechanical drive noise can indicate a storage-device problem.','DISK-S020',1),(8,'DISK-R010',2,'A',1,'disk_danger_symptom','=','unreadable_files','POSSIBLE_DISK_FAILURE','Unreadable or disappearing files can indicate a storage-device or file-system problem.','DISK-S020',1),(9,'DISK-R010',3,'A',1,'disk_danger_symptom','=','io_freeze','POSSIBLE_DISK_FAILURE','Repeated freezing during file access requires storage investigation.','DISK-S020',1),(10,'DISK-R010',4,'A',1,'disk_danger_symptom','=','none','NO_IMMEDIATE_DISK_DANGER','No immediate storage-failure symptom was identified from the answers.','DISK-S040',1),(11,'DISK-R010',5,'A',1,'disk_danger_symptom','=','unknown','DISK_STATUS_UNCERTAIN','The storage condition cannot be determined confidently from the available information.','REMOTE-E001',1);
 /*!40000 ALTER TABLE `tree_rules` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping events for database 'pc_care'
+--
+
+--
+-- Dumping routines for database 'pc_care'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -697,4 +705,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-10 14:20:36
+-- Dump completed on 2026-10-10 19:14:33
