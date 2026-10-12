@@ -35,6 +35,7 @@ $os = Get-CimInstance Win32_OperatingSystem
 $computer = Get-CimInstance Win32_ComputerSystem
 $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
 $bios = Get-CimInstance Win32_BIOS
+$systemProduct = Get-CimInstance Win32_ComputerSystemProduct
 
 $bootTime = $os.LastBootUpTime
 $uptime = (Get-Date) - $bootTime
@@ -752,6 +753,10 @@ try {
 
         manufacturer             = [string]$computer.Manufacturer
         model                    = [string]$computer.Model
+        system_uuid              = [string]$systemProduct.UUID
+        bios_serial              = [string]$bios.SerialNumber
+        computer_name            = [string]$computer.Name
+
 
         windows_name             = [string]$os.Caption
         windows_build            = [string]$os.BuildNumber
