@@ -863,12 +863,16 @@ $UploadUrl = "http://192.168.0.104/pctoz/collector_receive.php"
 $JsonFile = Join-Path $PSScriptRoot "pc_check_result.json"
 
 $response = & curl.exe `
+    --show-error `
+    --include `
+    --max-time 30 `
     -X POST `
     -F "session_id=$SessionId" `
     -F "collector_token=$CollectorToken" `
     -F "pc_check_file=@$JsonFile" `
-    $UploadUrl
-
+    $UploadUrl 2>&1
+    
+Write-Host "Testing collector upload..."
 Write-Host ""
 Write-Host "Server response:"
 Write-Host $response
