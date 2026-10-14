@@ -278,6 +278,41 @@ INSERT INTO `observations` VALUES (1,1,NULL,'device_context',NULL,'affected_pc',
 UNLOCK TABLES;
 
 --
+-- Table structure for table `pc_identifiers`
+--
+
+DROP TABLE IF EXISTS `pc_identifiers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pc_identifiers` (
+  `identifier_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `pc_id` bigint(20) NOT NULL,
+  `identifier_type` varchar(40) NOT NULL,
+  `identifier_value` varchar(255) NOT NULL,
+  `first_seen_session_id` bigint(20) NOT NULL,
+  `last_seen_session_id` bigint(20) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`identifier_id`),
+  KEY `idx_pc_identifier_lookup` (`identifier_type`,`identifier_value`),
+  KEY `idx_pc_identifiers_pc` (`pc_id`),
+  KEY `fk_pc_identifiers_first_session` (`first_seen_session_id`),
+  KEY `fk_pc_identifiers_last_session` (`last_seen_session_id`),
+  CONSTRAINT `fk_pc_identifiers_first_session` FOREIGN KEY (`first_seen_session_id`) REFERENCES `diagnostic_sessions` (`session_id`),
+  CONSTRAINT `fk_pc_identifiers_last_session` FOREIGN KEY (`last_seen_session_id`) REFERENCES `diagnostic_sessions` (`session_id`),
+  CONSTRAINT `fk_pc_identifiers_pc` FOREIGN KEY (`pc_id`) REFERENCES `pcs` (`pc_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pc_identifiers`
+--
+
+LOCK TABLES `pc_identifiers` WRITE;
+/*!40000 ALTER TABLE `pc_identifiers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pc_identifiers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `pcs`
 --
 
@@ -735,4 +770,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-10-14 12:25:00
+-- Dump completed on 2026-10-14 13:22:10
