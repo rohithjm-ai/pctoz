@@ -859,18 +859,23 @@ if (-not (Test-Path $jsonPath)) {
 Write-Host ""
 Write-Host "Uploading PCTOZ result..."
 
-$UploadUrl = "http://192.168.0.104/pctoz/collector_receive.php"
+$UploadUrl = "http://192.168.0.105/pctoz/collector_receive.php"
 $JsonFile = Join-Path $PSScriptRoot "pc_check_result.json"
 
 $response = & curl.exe `
+    --silent `
     --show-error `
-    --include `
     --max-time 30 `
+    --write-out "`nHTTP_STATUS:%{http_code}" `
     -X POST `
     -F "session_id=$SessionId" `
     -F "collector_token=$CollectorToken" `
     -F "pc_check_file=@$JsonFile" `
     $UploadUrl 2>&1
+
+$curlExitCode = $LASTEXITCODE
+
+Write-Host "CURL_EXIT_CODE: $curlExitCode"
     
 Write-Host "Testing collector upload..."
 Write-Host ""

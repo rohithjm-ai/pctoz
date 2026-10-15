@@ -407,6 +407,54 @@ try {
         }
     }
     /*
+|--------------------------------------------------------------------------
+| Device identity recognition — reporting only
+|--------------------------------------------------------------------------
+*/
+
+    $identityMatches = [];
+
+    foreach (['system_uuid', 'bios_serial', 'computer_name'] as $type) {
+
+        $value = trim((string)($data[$type] ?? ''));
+
+        if ($value === '') {
+            continue;
+        }
+
+        $stmtIdentity = $pdo->prepare("
+        SELECT DISTINCT pc_id
+        FROM pc_identifiers
+        WHERE identifier_type COLLATE utf8mb4_unicode_ci
+              = ? COLLATE utf8mb4_unicode_ci
+          AND identifier_value COLLATE utf8mb4_unicode_ci
+              = ? COLLATE utf8mb4_unicode_ci
+    ");
+
+        $stmtIdentity->execute([$type, $value]);
+
+        foreach ($stmtIdentity->fetchAll(PDO::FETCH_COLUMN) as $pcId) {
+            $identityMatches[$pcId][] = $type;
+        }
+    }
+
+    $identityCandidates = [];
+
+    foreach ($identityMatches as $pcId => $matchedTypes) {
+
+        $hardwareMatches = array_intersect(
+            $matchedTypes,
+            ['system_uuid', 'bios_serial']
+        );
+
+        $identityCandidates[] = [
+            'pc_id' => (int)$pcId,
+            'matched_identifiers' => $matchedTypes,
+            'hardware_match_count' => count($hardwareMatches)
+        ];
+    }
+
+    /*
     |--------------------------------------------------------------------------
     | Mark collector as received
     |--------------------------------------------------------------------------
@@ -431,7 +479,8 @@ try {
         'ok' => true,
         'session_id' => $sessionId,
         'collector_status' => 'RECEIVED',
-        'next_node' => 'ROOT-S015'
+        'next_node' => 'ROOT-S015',
+        'identity_candidates' => $identityCandidates
     ]);
 } catch (Throwable $e) {
 
