@@ -422,14 +422,15 @@ try {
             continue;
         }
 
+
         $stmtIdentity = $pdo->prepare("
-        SELECT DISTINCT pc_id
-        FROM pc_identifiers
-        WHERE identifier_type COLLATE utf8mb4_unicode_ci
-              = ? COLLATE utf8mb4_unicode_ci
-          AND identifier_value COLLATE utf8mb4_unicode_ci
-              = ? COLLATE utf8mb4_unicode_ci
-    ");
+    SELECT DISTINCT pc_id
+    FROM pc_identifiers
+    WHERE identifier_type COLLATE utf8mb4_unicode_ci
+          = CONVERT(? USING utf8mb4) COLLATE utf8mb4_unicode_ci
+      AND identifier_value COLLATE utf8mb4_unicode_ci
+          = CONVERT(? USING utf8mb4) COLLATE utf8mb4_unicode_ci
+");
 
         $stmtIdentity->execute([$type, $value]);
 

@@ -1,2 +1,2 @@
-﻿{"ok":false,"error":"SQLSTATE[42000]: Syntax error or access violation: 1253 COLLATION 'utf8mb4_unicode_ci' is not valid for CHARACTER SET 'binary'"}
-HTTP_STATUS:500
+﻿{"ok":true,"session_id":330,"collector_status":"RECEIVED","next_node":"ROOT-S015","identity_candidates":[{"pc_id":1,"matched_identifiers":["system_uuid","bios_serial","computer_name"],"hardware_match_count":2}]}
+HTTP_STATUS:200
